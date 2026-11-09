@@ -695,7 +695,7 @@ button:focus-visible, input:focus-visible, label:focus-within { outline: 4px sol
     const u = new SpeechSynthesisUtterance(text);
     u.lang = voice?.lang || 'es-ES';
     if (voice) u.voice = voice;
-    u.rate = .85; u.pitch = 1.2;
+    u.rate = .9; u.pitch = 1;
     if (after) { let done = false; const go = () => { if (!done) { done = true; after(); } }; u.onend = go; setTimeout(go, 5500); }
     speechSynthesis.speak(u);
   }
