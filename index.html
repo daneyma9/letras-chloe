@@ -1,0 +1,1672 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Letras con Lila</title>
+<meta name="description" content="Juego para aprender letras, sílabas, palabras y números con Lila la unicornio.">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#FFF3F8">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Lila">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Andika:wght@400;700&family=Fredoka:wght@500;600;700&display=swap">
+<style>
+/* Layout: un jardín de caramelo; fichas de gominola con brillo, Lila la unicornio acompaña cada juego. Tema único pastel. */
+:root {
+  --bg: #FFF3F8;
+  --bg-dot: #FFDCEB;
+  --card: #FFFFFF;
+  --ink: #5A2A6E;
+  --ink-soft: #94709F;
+  --pink: #FF5C9D;   --pink-l: #FFD9E8;   --pink-d: #D63A7C;
+  --lilac: #9B6BFF;  --lilac-l: #E9DFFF;  --lilac-d: #7647DA;
+  --sky: #3FA2F0;    --sky-l: #D6ECFF;    --sky-d: #2380CB;
+  --mint: #1FBF93;   --mint-l: #CFF5E7;   --mint-d: #12936F;
+  --peach: #FF8A5B;  --peach-l: #FFE2D3;  --peach-d: #DA6332;
+  --butter: #FFC93C; --butter-l: #FFF2C6; --butter-d: #D69F12;
+  --ghost: #FBE6F0;
+  --line: #F6D3E4;
+  --shadow: rgba(160, 60, 120, .16);
+  --f-letter: "Andika", "Comic Sans MS", "Trebuchet MS", sans-serif;
+  --f-display: "Fredoka", "Andika", "Trebuchet MS", sans-serif;
+  color-scheme: light;
+}
+html, body { height: 100%; margin: 0; }
+[hidden] { display: none !important; }
+img { max-width: 100%; }
+body {
+  background-color: var(--bg);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140' viewBox='0 0 140 140'%3E%3Cg fill='%23FFDCEB'%3E%3Cpath d='M30 26c-3-5-11-3-10 3 1 5 10 10 10 10s9-5 10-10c1-6-7-8-10-3z'/%3E%3Cpath d='M104 92l3 7 7 1-5 5 1 7-6-4-6 4 1-7-5-5 7-1z'/%3E%3Ccircle cx='110' cy='30' r='3'/%3E%3Ccircle cx='36' cy='104' r='3'/%3E%3Ccircle cx='72' cy='66' r='2'/%3E%3C/g%3E%3C/svg%3E");
+  background-size: 140px 140px;
+  color: var(--ink);
+  font-family: var(--f-display);
+  -webkit-tap-highlight-color: transparent;
+  user-select: none; -webkit-user-select: none;
+  overflow-x: hidden;
+}
+.app {
+  min-height: 100%; box-sizing: border-box;
+  padding-top: max(14px, env(safe-area-inset-top, 0px));
+  padding-bottom: max(32px, env(safe-area-inset-bottom, 0px));
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  max-width: 880px; margin: 0 auto;
+  display: flex; flex-direction: column; gap: 22px;
+}
+button { font: inherit; color: inherit; cursor: pointer; border: 0; background: none; }
+button:focus-visible, input:focus-visible, label:focus-within { outline: 4px solid var(--lilac); outline-offset: 3px; }
+
+/* ---------- barra ---------- */
+.bar { display: flex; align-items: center; gap: 10px; justify-content: space-between; }
+.round {
+  width: 64px; height: 64px; border-radius: 50%; background: var(--card);
+  box-shadow: 0 5px 0 var(--line); display: grid; place-items: center; font-size: 30px; flex: none;
+}
+.round:active { transform: translateY(4px); box-shadow: 0 1px 0 var(--line); }
+.stars {
+  display: flex; align-items: center; gap: 8px; background: var(--card); border-radius: 999px;
+  padding: 8px 20px 8px 12px; box-shadow: 0 5px 0 var(--line);
+  font-weight: 700; font-size: 28px; font-variant-numeric: tabular-nums;
+}
+.stars .s { width: 36px; height: 36px; display: grid; place-items: center; border-radius: 50%; background: var(--butter-l); font-size: 22px; }
+.stars.pop { animation: pop .5s; }
+
+/* ---------- Lila la unicornio ---------- */
+.lila { width: 100%; height: 100%; overflow: visible; }
+.lila .face, .lila .ear { fill: #fff; stroke: var(--ink); stroke-width: 3; stroke-linejoin: round; }
+.lila .in { fill: var(--pink-l); }
+.lila .horn { fill: var(--butter); stroke: var(--ink); stroke-width: 3; stroke-linejoin: round; }
+.lila .hs { stroke: var(--butter-d); stroke-width: 2.5; fill: none; stroke-linecap: round; }
+.lila .m1 { fill: var(--pink); } .lila .m2 { fill: var(--lilac); } .lila .m3 { fill: var(--sky); } .lila .m4 { fill: var(--mint); }
+.lila .muz { fill: var(--pink-l); }
+.lila .dark { fill: var(--ink); } .lila .shine { fill: #fff; }
+.lila .blush { fill: var(--pink); opacity: .35; }
+.lila .line { fill: none; stroke: var(--ink); stroke-width: 3; stroke-linecap: round; }
+.lila .happy { display: none; }
+.mascot { position: relative; flex: none; animation: float 3.2s ease-in-out infinite; }
+.mascot.yay { animation: yay .7s ease; }
+.mascot.yay .open, .mascot.yay .smile { display: none; }
+.mascot.yay .happy { display: inline; }
+.mascot.oops { animation: oops .6s ease; }
+.buddy { display: flex; align-items: center; gap: 12px; justify-content: center; min-height: 92px; }
+.buddy .mascot { width: 86px; height: 92px; }
+.bubble {
+  position: relative; background: var(--card); border-radius: 22px; padding: 12px 18px;
+  font-weight: 600; font-size: 22px; box-shadow: 0 4px 0 var(--line); max-width: min(62vw, 420px);
+  text-wrap: balance;
+}
+.bubble::before {
+  content: ""; position: absolute; left: -10px; top: 50%; margin-top: -10px;
+  border: 10px solid transparent; border-right-color: var(--card); border-left: 0;
+}
+.bubble:empty { visibility: hidden; }
+
+/* ---------- portada ---------- */
+.hero { display: flex; align-items: center; justify-content: center; gap: 18px; flex-wrap: wrap; padding-top: 4px; }
+.hero .mascot { width: clamp(120px, 24vw, 170px); height: clamp(130px, 26vw, 184px); cursor: pointer; }
+.hero-text { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.hero h1 { margin: 0; font-weight: 700; font-size: clamp(42px, 9vw, 76px); line-height: .95; letter-spacing: -.01em; text-wrap: balance; }
+.hero h1 .name {
+  background: linear-gradient(100deg, var(--pink) 10%, var(--lilac) 60%, var(--sky) 100%);
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+  position: relative; display: inline-block; padding-right: .15em;
+}
+.hero h1 .spark { position: absolute; right: -.35em; top: -.25em; font-size: .45em; animation: twinkle 2.4s ease-in-out infinite; }
+.hero p { margin: 0; font-size: 22px; font-weight: 500; color: var(--ink-soft); }
+
+.sec { display: flex; flex-direction: column; gap: 14px; }
+.sec-h { display: flex; align-items: center; gap: 10px; }
+.sec-h h2 { margin: 0; font-weight: 700; font-size: 26px; }
+.sec-h .chip { font-family: var(--f-letter); font-weight: 700; font-size: 18px; padding: 2px 12px; border-radius: 999px; background: var(--card); box-shadow: 0 3px 0 var(--line); }
+.sec-h::after { content: ""; flex: 1; height: 3px; border-radius: 3px; background: repeating-linear-gradient(90deg, var(--line) 0 10px, transparent 10px 18px); }
+.games { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+.game {
+  --l: var(--pink-l); --b: var(--pink); --d: var(--pink-d);
+  position: relative; overflow: hidden;
+  background: var(--l); border-radius: 30px; padding: 16px 10px 16px;
+  display: flex; flex-direction: column; align-items: center; gap: 8px; text-align: center;
+  box-shadow: 0 7px 0 color-mix(in srgb, var(--b) 35%, var(--l)); transition: transform .12s;
+}
+.game::before {
+  content: ""; position: absolute; right: -26px; top: -26px; width: 90px; height: 90px; border-radius: 50%;
+  background: rgba(255,255,255,.45);
+}
+.game:active { transform: translateY(5px); box-shadow: 0 2px 0 color-mix(in srgb, var(--b) 35%, var(--l)); }
+.game .badge {
+  position: relative; width: 88px; height: 88px; border-radius: 50%; background: var(--card);
+  display: grid; place-items: center; font-family: var(--f-letter); font-weight: 700; font-size: 40px; color: var(--b);
+  box-shadow: 0 4px 0 color-mix(in srgb, var(--b) 25%, var(--l));
+}
+.game .badge.em { font-size: 46px; }
+.game b { position: relative; font-weight: 600; font-size: 22px; line-height: 1.1; }
+.game small { position: relative; font-size: 15px; font-weight: 500; color: var(--ink-soft); font-family: var(--f-letter); }
+.k-pink   { --l: var(--pink-l);   --b: var(--pink);   --d: var(--pink-d); }
+.k-lilac  { --l: var(--lilac-l);  --b: var(--lilac);  --d: var(--lilac-d); }
+.k-sky    { --l: var(--sky-l);    --b: var(--sky);    --d: var(--sky-d); }
+.k-mint   { --l: var(--mint-l);   --b: var(--mint);   --d: var(--mint-d); }
+.k-peach  { --l: var(--peach-l);  --b: var(--peach);  --d: var(--peach-d); }
+.k-butter { --l: var(--butter-l); --b: var(--butter-d); --d: var(--butter-d); }
+
+.foot { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 14px; }
+.cases { display: flex; align-items: center; gap: 10px; }
+.cases > span { font-size: 18px; font-weight: 500; color: var(--ink-soft); }
+.seg { display: flex; background: var(--card); border-radius: 999px; padding: 5px; box-shadow: 0 4px 0 var(--line); gap: 4px; }
+.seg button { border-radius: 999px; padding: 6px 18px; font-family: var(--f-letter); font-weight: 700; font-size: 24px; color: var(--ink-soft); }
+.seg button[aria-pressed="true"] { background: var(--pink); color: #fff; }
+.hold {
+  position: relative; overflow: hidden; background: var(--card); border-radius: 999px;
+  padding: 12px 20px; font-size: 15px; font-weight: 500; color: var(--ink-soft); box-shadow: 0 4px 0 var(--line);
+}
+.hold i { position: absolute; inset: 0; background: var(--lilac-l); transform-origin: left; transform: scaleX(0); }
+.hold.on i { transform: scaleX(1); transition: transform 1.4s linear; }
+.hold span { position: relative; }
+
+/* ---------- juego ---------- */
+.stage { display: flex; flex-direction: column; align-items: center; gap: 22px; }
+.ask { font-weight: 700; font-size: clamp(30px, 6vw, 44px); text-align: center; margin: 0; text-wrap: balance; line-height: 1.12; }
+.ask .hl { color: var(--pink); }
+.picture {
+  font-size: clamp(100px, 22vw, 160px); line-height: 1; background: var(--card); border-radius: 40px;
+  padding: 20px 30px; box-shadow: 0 7px 0 var(--line);
+}
+.picture img { width: 1em; height: 1em; object-fit: cover; border-radius: 26px; display: block; }
+.picture.tap { cursor: pointer; }
+.word { font-family: var(--f-letter); font-weight: 700; font-size: clamp(46px, 10vw, 72px); letter-spacing: .06em; line-height: 1; }
+.word .blank { display: inline-block; min-width: .7em; border-bottom: 7px solid var(--pink); border-radius: 3px; color: var(--pink); text-align: center; }
+
+.choices { display: flex; flex-wrap: wrap; justify-content: center; gap: 20px; }
+.tile {
+  --b: var(--pink); --d: var(--pink-d);
+  position: relative; width: clamp(96px, 22vw, 150px); aspect-ratio: 1; max-width: 100%;
+  border-radius: 32px; color: #fff;
+  font-family: var(--f-letter); font-weight: 700; font-size: clamp(58px, 13vw, 92px); line-height: 1;
+  display: grid; place-items: center;
+  background-color: var(--b);
+  background-image: linear-gradient(180deg, color-mix(in srgb, var(--b), #fff 28%) 0%, var(--b) 70%);
+  box-shadow: 0 8px 0 var(--d), 0 16px 20px var(--shadow);
+  text-shadow: 0 3px 0 var(--d);
+  transition: transform .12s;
+}
+.tile::after {
+  content: ""; position: absolute; top: 9%; left: 13%; width: 30%; height: 14%; border-radius: 50%;
+  background: rgba(255,255,255,.55); transform: rotate(-14deg); pointer-events: none;
+}
+.tile:active { transform: translateY(5px); box-shadow: 0 3px 0 var(--d), 0 8px 12px var(--shadow); }
+.c0 { --b: var(--pink);   --d: var(--pink-d); }
+.c1 { --b: var(--lilac);  --d: var(--lilac-d); }
+.c2 { --b: var(--sky);    --d: var(--sky-d); }
+.c3 { --b: var(--mint);   --d: var(--mint-d); }
+.c4 { --b: var(--peach);  --d: var(--peach-d); }
+.tile.good { --b: var(--mint); --d: var(--mint-d); animation: bounce .6s; }
+.tile.bad { animation: shake .45s; opacity: .4; }
+.tile.used { visibility: hidden; }
+.tile.syl { width: auto; min-width: clamp(130px, 26vw, 180px); aspect-ratio: auto; padding: 18px 24px; box-sizing: border-box; }
+.sum { font-family: var(--f-letter); font-weight: 700; font-size: clamp(36px, 8vw, 54px); display: flex; gap: 12px; align-items: center; min-height: 1.2em; }
+.sum .p { color: var(--ink-soft); }
+
+.slots { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+.slot {
+  width: clamp(64px, 14vw, 96px); aspect-ratio: 1; border-radius: 22px; box-sizing: border-box;
+  border: 4px dashed var(--lilac-l); background: var(--card); display: grid; place-items: center;
+  font-family: var(--f-letter); font-weight: 700; font-size: clamp(42px, 9vw, 62px); color: #EAD9F0;
+}
+.slot.next { border: 4px solid var(--lilac); animation: glow 1.4s ease-in-out infinite; }
+.slot.full { border: 0; background: var(--mint); color: #fff; text-shadow: 0 3px 0 var(--mint-d); animation: pop .35s; box-shadow: 0 6px 0 var(--mint-d); }
+.choices.small .tile { width: clamp(74px, 16vw, 108px); font-size: clamp(44px, 9vw, 66px); border-radius: 24px; }
+
+/* contar */
+.count {
+  display: flex; flex-wrap: wrap; justify-content: center; gap: 10px 14px; max-width: 640px;
+  background: var(--card); border-radius: 40px; padding: 20px 22px; box-shadow: 0 7px 0 var(--line);
+}
+.obj { position: relative; font-size: clamp(52px, 11vw, 74px); line-height: 1; padding: 4px; border-radius: 24px; transition: transform .15s; }
+.obj.done { transform: scale(.88); }
+.obj.done::after {
+  content: attr(data-n); position: absolute; right: -4px; bottom: -4px; min-width: 34px; height: 34px; border-radius: 17px;
+  background: var(--lilac); color: #fff; font: 700 22px/34px var(--f-letter); text-align: center; box-shadow: 0 3px 0 var(--lilac-d);
+}
+
+/* trazar */
+.trace {
+  position: relative; width: min(100%, 560px, 56vh); aspect-ratio: 1; max-width: 100%;
+  background: var(--card); border-radius: 40px; box-shadow: 0 7px 0 var(--line); touch-action: none; overflow: hidden;
+}
+.trace canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+.row { display: flex; gap: 14px; flex-wrap: wrap; justify-content: center; }
+.pill { background: var(--pink); color: #fff; border-radius: 999px; padding: 14px 26px; font-weight: 600; font-size: 22px; box-shadow: 0 5px 0 var(--pink-d); }
+.pill:active { transform: translateY(3px); box-shadow: 0 2px 0 var(--pink-d); }
+.pill.alt { background: var(--card); color: var(--ink); box-shadow: 0 5px 0 var(--line); }
+.pill.warn { background: var(--peach); box-shadow: 0 5px 0 var(--peach-d); }
+
+/* abecedario / números */
+.abc { display: grid; grid-template-columns: repeat(auto-fill, minmax(86px, 1fr)); gap: 16px; width: 100%; }
+.abc .tile { width: 100%; font-size: clamp(38px, 8vw, 50px); border-radius: 24px; }
+.abc .tile small { font-size: .5em; opacity: .9; }
+.card {
+  position: fixed; inset: 0; background: rgba(90, 42, 110, .35); backdrop-filter: blur(3px);
+  display: grid; place-items: center; z-index: 20;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+.card-in {
+  background: var(--card); border-radius: 40px; padding: 28px 32px; text-align: center;
+  display: flex; flex-direction: column; align-items: center; gap: 12px;
+  box-shadow: 0 10px 0 var(--line); animation: pop .35s; max-width: 100%; box-sizing: border-box;
+}
+.card-in .big { font-family: var(--f-letter); font-weight: 700; font-size: clamp(100px, 24vw, 160px); line-height: 1; color: var(--pink); }
+.card-in .big span { color: var(--lilac); }
+.card-in .em { font-size: 90px; line-height: 1; }
+.card-in .w { font-family: var(--f-letter); font-weight: 700; font-size: 46px; }
+.card-in .w mark { background: none; color: var(--pink); text-decoration: underline 5px; text-underline-offset: 6px; }
+.frames { display: flex; flex-direction: column; gap: 8px; }
+.frame { display: grid; grid-template-columns: repeat(5, 1fr); gap: 4px; padding: 6px; border: 3px solid var(--lilac-l); border-radius: 16px; }
+.frame span { width: clamp(38px, 9vw, 52px); aspect-ratio: 1; display: grid; place-items: center; font-size: clamp(26px, 6vw, 36px); border-radius: 10px; background: var(--bg); }
+
+/* pegatinas */
+.album { display: grid; grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); gap: 16px; width: 100%; }
+.stk {
+  aspect-ratio: 1; border-radius: 50%; display: grid; place-items: center; font-size: clamp(46px, 10vw, 58px);
+  background: var(--card); box-shadow: 0 0 0 5px #fff, 0 6px 0 5px var(--line); transform: rotate(var(--r, 0deg));
+}
+.stk.locked { background: var(--ghost); color: var(--ink-soft); font: 700 34px var(--f-display); box-shadow: inset 0 0 0 3px dashed var(--line); border: 3px dashed var(--line); }
+.meter { width: min(100%, 460px); height: 22px; border-radius: 11px; background: var(--card); box-shadow: inset 0 0 0 3px var(--line); overflow: hidden; }
+.meter i { display: block; height: 100%; background: linear-gradient(90deg, var(--pink), var(--lilac)); border-radius: 11px; }
+.newstk { font-size: 120px; line-height: 1; animation: spinIn .9s cubic-bezier(.2,1.4,.4,1); }
+
+/* ---------- camino guiado ---------- */
+.streak { display: flex; align-items: center; gap: 6px; background: var(--card); border-radius: 999px; padding: 8px 16px; box-shadow: 0 5px 0 var(--line); font-weight: 600; font-size: 20px; font-variant-numeric: tabular-nums; }
+.barl { display: flex; gap: 10px; align-items: center; }
+.cta {
+  display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; text-align: left;
+  border-radius: 36px; padding: 22px 24px; color: #fff;
+  background: linear-gradient(110deg, var(--pink), var(--lilac));
+  box-shadow: 0 8px 0 var(--lilac-d), 0 18px 26px var(--shadow); position: relative; overflow: hidden;
+}
+.cta::before { content: ""; position: absolute; right: -40px; top: -60px; width: 190px; height: 190px; border-radius: 50%; background: rgba(255,255,255,.14); }
+.cta:active { transform: translateY(5px); box-shadow: 0 3px 0 var(--lilac-d); }
+.cta-t { position: relative; display: flex; flex-direction: column; gap: 6px; flex: 1; min-width: 200px; }
+.cta small { font-size: 17px; font-weight: 500; }
+.cta b { font-size: clamp(26px, 5vw, 38px); font-weight: 700; line-height: 1.08; }
+.cta .meter { height: 14px; box-shadow: none; background: rgba(255,255,255,.35); }
+.cta .meter i { background: #fff; }
+.cta-b { position: relative; background: #fff; color: var(--pink-d); border-radius: 999px; padding: 14px 26px; font-weight: 700; font-size: 24px; box-shadow: 0 5px 0 rgba(90,42,110,.25); white-space: nowrap; }
+.free { margin: 4px 0 -8px; font-size: 16px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-soft); }
+.game.locked { filter: grayscale(.7); opacity: .65; }
+.prog { display: flex; gap: 6px; justify-content: center; }
+.prog i { flex: 1; max-width: 40px; height: 12px; border-radius: 6px; background: var(--card); box-shadow: inset 0 0 0 2px var(--line); }
+.prog i.on { background: var(--mint); box-shadow: none; }
+.prog i.now { background: var(--pink-l); box-shadow: inset 0 0 0 2px var(--pink); }
+.tile.hint { animation: hint 1s ease-in-out infinite; }
+.tile.pic {
+  width: auto; min-width: clamp(110px, 24vw, 160px); aspect-ratio: auto; padding: 18px 20px; box-sizing: border-box;
+  background: var(--card); font-size: clamp(50px, 11vw, 74px); letter-spacing: .04em; text-shadow: none;
+  box-shadow: 0 8px 0 var(--line), 0 16px 20px var(--shadow);
+}
+.tile.pic::after { display: none; }
+.tile.pic.wide { font-size: clamp(32px, 7vw, 46px); }
+.tile.pic.good { background: var(--mint-l); box-shadow: 0 8px 0 var(--mint); }
+.readcard {
+  font-family: var(--f-letter); font-weight: 700; font-size: clamp(54px, 13vw, 96px); line-height: 1.1; text-align: center;
+  background: var(--card); border-radius: 36px; padding: 16px 36px; box-shadow: 0 7px 0 var(--line); letter-spacing: .04em; max-width: 100%; box-sizing: border-box;
+}
+.sumline { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; justify-content: center; }
+.sumline .plus { font: 700 60px var(--f-letter); color: var(--pink); }
+.sub { margin: 0; font-size: 22px; font-weight: 500; color: var(--ink-soft); text-align: center; text-wrap: balance; }
+.sub b { color: var(--ink); }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
+.chips span { font: 700 26px var(--f-letter); background: var(--card); border-radius: 14px; padding: 6px 14px; box-shadow: 0 4px 0 var(--line); }
+.mascot.big { width: 150px; height: 162px; }
+.path { display: flex; flex-direction: column; gap: 14px; width: 100%; }
+.stopn {
+  display: flex; align-items: center; gap: 14px; width: min(100%, 410px); text-align: left;
+  padding: 10px 18px 10px 10px; border-radius: 999px; background: var(--card); box-shadow: 0 5px 0 var(--line);
+}
+.stopn:nth-child(even) { align-self: flex-end; }
+.stopn .badge { position: relative; flex: none; width: 72px; height: 72px; border-radius: 50%; display: grid; place-items: center; background: var(--l); color: var(--b); font: 700 28px var(--f-letter); }
+.stopn .badge.em { font-size: 36px; }
+.stopn .badge i { position: absolute; right: -6px; top: -8px; font-size: 24px; font-style: normal; }
+.stopn .lbl { display: flex; flex-direction: column; gap: 3px; min-width: 0; flex: 1; }
+.stopn small { font-size: 14px; color: var(--ink-soft); font-weight: 500; }
+.stopn b { font-size: 21px; font-weight: 600; line-height: 1.1; }
+.stopn em { font-style: normal; font-weight: 700; color: var(--pink); font-size: 18px; }
+.stopn .meter { height: 10px; width: 100%; }
+.stopn.now { box-shadow: 0 5px 0 var(--pink), 0 0 0 5px var(--pink-l); }
+.stopn.lock { background: transparent; box-shadow: inset 0 0 0 3px var(--line); color: var(--ink-soft); }
+.stopn.lock .badge { background: var(--ghost); }
+@keyframes hint { 50% { transform: scale(1.08); box-shadow: 0 8px 0 var(--d), 0 0 0 9px var(--butter-l); } }
+
+/* ---------- entrada ---------- */
+.gate { min-height: 80vh; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px; text-align: center; }
+.gate-in {
+  font: 700 28px var(--f-letter); color: var(--ink); background: var(--card); text-align: center;
+  border: 4px solid var(--line); border-radius: 22px; padding: 14px 18px; width: min(100%, 340px); box-sizing: border-box;
+}
+.gate .pill:disabled { opacity: .6; }
+
+/* ---------- mayores ---------- */
+.grown { font-family: var(--f-letter); user-select: text; -webkit-user-select: text; display: flex; flex-direction: column; gap: 18px; }
+.grown h2 { font-family: var(--f-display); font-weight: 700; font-size: 28px; margin: 0; }
+.grown h3 { font-family: var(--f-display); font-weight: 600; font-size: 20px; margin: 0; }
+.panel { background: var(--card); border-radius: 28px; padding: 22px; box-shadow: 0 6px 0 var(--line); display: flex; flex-direction: column; gap: 16px; }
+.panel p { margin: 0; font-size: 17px; line-height: 1.5; max-width: 65ch; }
+.legend { display: flex; flex-wrap: wrap; gap: 8px 16px; font-size: 15px; color: var(--ink-soft); }
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+.dot { width: 14px; height: 14px; border-radius: 4px; display: inline-block; }
+.st-new { background: var(--ghost); color: var(--ink-soft); }
+.st-learn { background: var(--butter); color: var(--ink); }
+.st-hard { background: var(--peach); color: #fff; }
+.st-ok { background: var(--mint); color: #fff; }
+.map { display: grid; grid-template-columns: repeat(auto-fill, minmax(64px, 1fr)); gap: 8px; }
+.map div { border-radius: 14px; padding: 8px 4px; text-align: center; display: flex; flex-direction: column; gap: 2px; }
+.map b { font-size: 28px; line-height: 1; }
+.map small { font-size: 12px; font-variant-numeric: tabular-nums; opacity: .9; }
+.counts { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; }
+.counts div { background: var(--bg); border-radius: 14px; padding: 10px 12px; display: flex; flex-direction: column; }
+.counts b { font-size: 24px; font-variant-numeric: tabular-nums; }
+.counts span { font-size: 14px; color: var(--ink-soft); }
+.words ul { margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+.words li { list-style: none; display: flex; align-items: center; gap: 12px; background: var(--bg); border-radius: 14px; padding: 8px 12px; }
+.words .pic { font-size: 40px; width: 48px; height: 48px; display: grid; place-items: center; line-height: 1; }
+.words .pic img { width: 48px; height: 48px; object-fit: cover; border-radius: 10px; }
+.words .nm { flex: 1; min-width: 0; font-size: 24px; font-weight: 700; overflow-wrap: anywhere; }
+.del { background: var(--card); border-radius: 999px; width: 40px; height: 40px; font-size: 18px; box-shadow: inset 0 0 0 2px var(--line); }
+.form { display: flex; flex-direction: column; gap: 12px; }
+.form label { font-size: 15px; color: var(--ink-soft); }
+.form input[type="text"] {
+  font: 700 24px var(--f-letter); color: var(--ink); background: var(--bg);
+  border: 3px solid var(--line); border-radius: 14px; padding: 10px 14px; width: 100%; box-sizing: border-box;
+}
+.emojis { display: flex; flex-wrap: wrap; gap: 6px; }
+.emojis button { font-size: 30px; width: 52px; height: 52px; border-radius: 14px; background: var(--bg); }
+.emojis button[aria-pressed="true"] { box-shadow: inset 0 0 0 3px var(--pink); background: var(--card); }
+.photo { display: inline-flex; align-items: center; gap: 10px; flex-wrap: wrap; position: relative; }
+.photo input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+.photo img { width: 52px; height: 52px; object-fit: cover; border-radius: 12px; }
+.msg { font-size: 15px; min-height: 1.3em; color: var(--ink-soft); }
+.msg.err { color: var(--pink-d); }
+
+/* premio */
+.party { position: fixed; inset: 0; pointer-events: none; overflow: hidden; z-index: 30; }
+.bit { position: absolute; top: -40px; font-size: 32px; animation: fall linear forwards; }
+.cheer {
+  position: fixed; left: 50%; top: 38%; transform: translate(-50%, -50%);
+  font-weight: 700; font-size: clamp(46px, 10vw, 84px); color: var(--pink);
+  -webkit-text-stroke: 8px #fff; paint-order: stroke fill;
+  z-index: 31; pointer-events: none; animation: cheer 1.6s forwards; white-space: nowrap;
+}
+
+@keyframes pop { 0% { transform: scale(.6); } 60% { transform: scale(1.12); } 100% { transform: scale(1); } }
+@keyframes bounce { 0%,100% { transform: translateY(0); } 30% { transform: translateY(-24px) scale(1.08); } 60% { transform: translateY(0) scale(.96); } }
+@keyframes shake { 0%,100% { transform: translateX(0); } 20%,60% { transform: translateX(-10px); } 40%,80% { transform: translateX(10px); } }
+@keyframes fall { to { transform: translateY(115vh) rotate(540deg); } }
+@keyframes cheer { 0% { transform: translate(-50%,-50%) scale(.3); opacity: 0; } 20% { transform: translate(-50%,-50%) scale(1.1); opacity: 1; } 80% { opacity: 1; } 100% { transform: translate(-50%,-80%) scale(1); opacity: 0; } }
+@keyframes float { 0%,100% { transform: translateY(0) rotate(-2deg); } 50% { transform: translateY(-8px) rotate(2deg); } }
+@keyframes yay { 0% { transform: translateY(0); } 35% { transform: translateY(-26px) rotate(-8deg) scale(1.06); } 70% { transform: translateY(0) rotate(4deg); } 100% { transform: none; } }
+@keyframes oops { 0%,100% { transform: rotate(0); } 30% { transform: rotate(-10deg); } 65% { transform: rotate(6deg); } }
+@keyframes twinkle { 0%,100% { transform: scale(1) rotate(0); opacity: 1; } 50% { transform: scale(.7) rotate(20deg); opacity: .6; } }
+@keyframes glow { 0%,100% { box-shadow: 0 0 0 0 var(--lilac-l); } 50% { box-shadow: 0 0 0 8px var(--lilac-l); } }
+@keyframes spinIn { 0% { transform: scale(0) rotate(-200deg); } 100% { transform: scale(1) rotate(0); } }
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition: none !important; }
+  .party { display: none; }
+}
+@media (max-width: 640px) {
+  .games { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+  .games .game:last-child:nth-child(odd) { grid-column: 1 / -1; }
+}
+@media (max-width: 440px) {
+  .game .badge { width: 72px; height: 72px; font-size: 32px; }
+  .game b { font-size: 19px; }
+  .round { width: 56px; height: 56px; font-size: 26px; }
+  .bubble { font-size: 19px; }
+}
+</style>
+</head>
+<body>
+<div class="app" id="app"></div>
+<div class="party" id="party" aria-hidden="true"></div>
+<script src="config.js"></script>
+<script>
+(() => {
+  // ---------- almacenamiento local + nube ----------
+  const CFG = window.LILA_CONFIG || {};
+  const CLOUD_ON = !!(CFG.url && CFG.key);
+  const PID = CFG.id || 'chloe';
+  const LS = {
+    get(k, d) { try { const v = localStorage.getItem('lila-' + k); return v == null ? d : JSON.parse(v); } catch { return d; } },
+    set(k, v) { try { localStorage.setItem('lila-' + k, JSON.stringify(v)); return true; } catch { return false; } },
+    del(k) { try { localStorage.removeItem('lila-' + k); } catch {} },
+  };
+  const SYNC_KEYS = ['name', 'stars', 'case', 'stats', 'words', 'guide'];
+  const Cloud = {
+    status: CLOUD_ON ? 'idle' : 'off', last: 0, timer: null, onchange: null,
+    set(s) { this.status = s; if (this.onchange) this.onchange(s); },
+    async rpc(fn, body, keepalive) {
+      const ctl = new AbortController(), to = setTimeout(() => ctl.abort(), 8000);
+      try {
+        const r = await fetch(`${CFG.url.replace(/\/+$/, '')}/rest/v1/rpc/${fn}`, {
+          method: 'POST', keepalive: !!keepalive, signal: ctl.signal,
+          headers: { 'Content-Type': 'application/json', apikey: CFG.key, Authorization: 'Bearer ' + CFG.key },
+          body: JSON.stringify(body),
+        });
+        const j = await r.json().catch(() => null);
+        if (!r.ok) { const e = new Error((j && j.message) || 'error'); e.server = true; throw e; }
+        return j;
+      } finally { clearTimeout(to); }
+    },
+    snapshot() { const d = { t: LS.get('t', 0) }; SYNC_KEYS.forEach(k => { const v = LS.get(k); if (v !== undefined) d[k] = v; }); return d; },
+    apply(d) { SYNC_KEYS.forEach(k => { if (d[k] !== undefined) LS.set(k, d[k]); }); LS.set('t', d.t || 0); },
+    // Devuelve true si después hay que subir cambios
+    merge(server) {
+      const lt = LS.get('t', 0), synced = LS.get('synced', 0), st = server.t || 0;
+      if (lt === synced) { if (st !== lt || !lt) { this.apply(server); LS.set('synced', st); } return false; }
+      if (st === synced) return true;
+      const local = this.snapshot();
+      const base = st > lt ? server : local, other = st > lt ? local : server;
+      const out = { ...other, ...base };
+      out.stars = Math.max(local.stars || 0, server.stars || 0);
+      const ga = base.guide || {}, gb = other.guide || {}, items = { ...(gb.items || {}) };
+      for (const [id, it] of Object.entries(ga.items || {})) { const o = items[id]; items[id] = !o || (it.seen || 0) >= (o.seen || 0) ? it : o; }
+      out.guide = { ...gb, ...ga, items, stop: Math.max(ga.stop || 0, gb.stop || 0), sessions: Math.max(ga.sessions || 0, gb.sessions || 0),
+        days: [...new Set([...(ga.days || []), ...(gb.days || [])])].sort((a, b) => a - b).slice(-400) };
+      out.t = Date.now(); this.apply(out); return true;
+    },
+    // 'ok' | 'bad' (contraseña incorrecta) | 'blocked' | 'offline'
+    async pull(pass) {
+      try {
+        const res = await this.rpc('entrar', { p_id: PID, p_clave: pass });
+        if (!res) return 'bad';
+        const needPush = this.merge(res.datos || {});
+        this.last = Date.now(); this.set('ok');
+        if (needPush) this.push();
+        return 'ok';
+      } catch (e) { if (e.server && /bloqueado/.test(e.message)) return 'blocked'; this.set('offline'); return 'offline'; }
+    },
+    touch() {
+      LS.set('t', Date.now());
+      if (!CLOUD_ON || !LS.get('pass', null)) return;
+      this.set('pending'); clearTimeout(this.timer); this.timer = setTimeout(() => this.push(), 2500);
+    },
+    async push(keepalive) {
+      const pass = LS.get('pass', null);
+      if (!CLOUD_ON || !pass) return;
+      clearTimeout(this.timer);
+      const snap = this.snapshot();
+      try {
+        const r = await this.rpc('guardar', { p_id: PID, p_clave: pass, p_datos: snap }, keepalive);
+        if (r) { LS.set('synced', snap.t); this.last = Date.now(); this.set(LS.get('t', 0) === snap.t ? 'ok' : 'pending'); }
+        else this.set('denied');
+      } catch { this.set('offline'); }
+    },
+    logout() { ['pass', 't', 'synced', ...SYNC_KEYS].forEach(k => LS.del(k)); },
+  };
+  document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden' && LS.get('t', 0) !== LS.get('synced', 0)) Cloud.push(true); });
+  window.addEventListener('online', () => { if (LS.get('t', 0) !== LS.get('synced', 0)) Cloud.push(); });
+
+  const LILA = `<svg class="lila" viewBox="0 0 120 130" aria-hidden="true">
+    <circle class="m1" cx="28" cy="58" r="15"/><circle class="m2" cx="23" cy="80" r="13"/><circle class="m3" cx="29" cy="100" r="11"/><circle class="m4" cx="38" cy="116" r="8"/>
+    <path class="ear" d="M36 44 L28 14 L56 32 Z"/><path class="in" d="M37 37 L33 22 L48 32 Z"/>
+    <path class="ear" d="M84 44 L92 14 L64 32 Z"/><path class="in" d="M83 37 L87 22 L72 32 Z"/>
+    <circle class="face" cx="60" cy="70" r="37"/>
+    <circle class="m2" cx="44" cy="38" r="11"/><circle class="m1" cx="56" cy="34" r="10"/><circle class="m3" cx="36" cy="48" r="8"/>
+    <path class="horn" d="M62 2 L53 34 L71 34 Z"/><path class="hs" d="M57 24 L67 20 M55.5 30 L68.5 26 M59 15 L65 13"/>
+    <ellipse class="muz" cx="60" cy="90" rx="24" ry="15"/>
+    <circle class="dark" cx="52" cy="88" r="2.6"/><circle class="dark" cx="68" cy="88" r="2.6"/>
+    <g class="open"><ellipse class="dark" cx="45" cy="66" rx="5.5" ry="7.5"/><ellipse class="dark" cx="75" cy="66" rx="5.5" ry="7.5"/><circle class="shine" cx="47" cy="63" r="2.2"/><circle class="shine" cx="77" cy="63" r="2.2"/></g>
+    <g class="happy"><path class="line" d="M39 68 Q45 60 51 68"/><path class="line" d="M69 68 Q75 60 81 68"/></g>
+    <ellipse class="blush" cx="33" cy="80" rx="7" ry="4"/><ellipse class="blush" cx="87" cy="80" rx="7" ry="4"/>
+    <path class="line smile" d="M54 97 Q60 101 66 97"/><path class="line happy" d="M52 96 Q60 105 68 96"/>
+  </svg>`;
+
+  // ---------- arranque: contraseña, nombre y juego ----------
+  const esc0 = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  function gate(title, sub, type, placeholder, button, onSubmit) {
+    const app = document.getElementById('app');
+    app.innerHTML = `<form class="gate" id="gate" novalidate>
+      <div class="mascot big">${LILA}</div>
+      <h1 class="ask">${title}</h1>
+      <p class="sub">${sub}</p>
+      <input class="gate-in" id="gin" type="${type}" placeholder="${placeholder}" autocomplete="${type === 'password' ? 'current-password' : 'off'}" autocapitalize="${type === 'password' ? 'off' : 'words'}" spellcheck="false" maxlength="40" aria-label="${placeholder}">
+      <button class="pill" id="gbtn" type="submit">${button}</button>
+      <p class="msg err" id="gmsg" aria-live="polite"></p>
+    </form>`;
+    const form = document.getElementById('gate'), input = document.getElementById('gin'), msg = document.getElementById('gmsg'), btn = document.getElementById('gbtn');
+    form.addEventListener('submit', async e => {
+      e.preventDefault();
+      const v = input.value.trim(); if (!v) { msg.textContent = 'Escribe algo primero.'; return; }
+      btn.disabled = true; msg.textContent = '';
+      const err = await onSubmit(v);
+      if (err) { msg.textContent = err; btn.disabled = false; }
+    });
+    input.focus();
+  }
+  function askLogin() {
+    gate('Hola', 'Escribe la contraseña de la familia para entrar.', 'password', 'Contraseña', 'Entrar', async pass => {
+      const r = await Cloud.pull(pass);
+      if (r === 'ok') { LS.set('pass', pass); afterLogin(); return ''; }
+      return r === 'bad' ? 'Esa contraseña no es correcta.' : r === 'blocked' ? 'Demasiados intentos. Espera 10 minutos y prueba otra vez.' : 'No hay conexión con internet. Prueba otra vez en un momento.';
+    });
+  }
+  function afterLogin() {
+    if (LS.get('name', '')) return startGame();
+    gate('¿Cómo se llama?', 'Lila va a llamarla por su nombre.', 'text', 'Nombre', 'Empezar', async name => {
+      LS.set('name', name.slice(0, 20)); Cloud.touch(); startGame(); return '';
+    });
+  }
+  async function boot() {
+    if (!CLOUD_ON) return afterLogin();
+    const pass = LS.get('pass', null);
+    if (!pass) return askLogin();
+    document.getElementById('app').innerHTML = `<div class="gate"><div class="mascot big">${LILA}</div><p class="sub">Cargando…</p></div>`;
+    const r = await Promise.race([Cloud.pull(pass), new Promise(res => setTimeout(() => res('slow'), 5000))]);
+    if (r === 'bad') { LS.del('pass'); return askLogin(); }
+    afterLogin();
+  }
+
+  function startGame() {
+
+  const NAME = LS.get('name', '');
+
+  // ---------- datos ----------
+  const ABC = [
+    ['A','a','abeja','🐝'], ['B','be','barco','⛵'], ['C','ce','casa','🏠'], ['D','de','dado','🎲'],
+    ['E','e','elefante','🐘'], ['F','efe','foca','🦭'], ['G','ge','gato','🐱'], ['H','hache','helado','🍦'],
+    ['I','i','isla','🏝️'], ['J','jota','jirafa','🦒'], ['K','ka','kiwi','🥝'], ['L','ele','luna','🌙'],
+    ['M','eme','mariposa','🦋'], ['N','ene','nube','☁️'], ['Ñ','eñe','piña','🍍'], ['O','o','oso','🐻'],
+    ['P','pe','princesa','👸'], ['Q','cu','queso','🧀'], ['R','erre','rosa','🌹'], ['S','ese','sol','☀️'],
+    ['T','te','tarta','🎂'], ['U','u','unicornio','🦄'], ['V','uve','vaca','🐮'], ['W','uve doble','kiwi','🥝'],
+    ['X','equis','saxofón','🎷'], ['Y','ye','yoyó','🪀'], ['Z','zeta','zapato','👟'],
+  ].map(([l, name, word, e]) => ({ l, name, word, e }));
+  const BY = Object.fromEntries(ABC.map(x => [x.l, x]));
+  const RARE = ['K', 'W', 'X'];
+
+  const START = [
+    ['abeja','🐝'],['árbol','🌳'],['arcoíris','🌈'],['barco','⛵'],['bota','👢'],['ballena','🐳'],['casa','🏠'],['corona','👑'],
+    ['caracol','🐌'],['dado','🎲'],['dinosaurio','🦕'],['delfín','🐬'],['elefante','🐘'],['estrella','⭐'],['foca','🦭'],['flor','🌸'],
+    ['fresa','🍓'],['gato','🐱'],['globo','🎈'],['galleta','🍪'],['helado','🍦'],['isla','🏝️'],['jirafa','🦒'],['kiwi','🥝'],['luna','🌙'],
+    ['lazo','🎀'],['mono','🐵'],['manzana','🍎'],['mariposa','🦋'],['nube','☁️'],['nariz','👃'],['oso','🐻'],['ojo','👁️'],
+    ['pato','🦆'],['perro','🐶'],['pez','🐟'],['princesa','👸'],['pelota','⚽'],['queso','🧀'],['rana','🐸'],['rosa','🌹'],
+    ['ratón','🐭'],['sol','☀️'],['seta','🍄'],['tren','🚂'],['tarta','🎂'],['tortuga','🐢'],['uva','🍇'],['unicornio','🦄'],
+    ['vaca','🐮'],['vela','🕯️'],['yoyó','🪀'],['zapato','👟'],['zorro','🦊'],
+  ].map(([word, e]) => ({ word, e }));
+
+  const BUILD = [
+    ['oso','🐻'],['sol','☀️'],['pez','🐟'],['uva','🍇'],['ojo','👁️'],['mar','🌊'],['pan','🍞'],['pie','🦶'],
+    ['pato','🦆'],['gato','🐱'],['casa','🏠'],['luna','🌙'],['mono','🐵'],['rana','🐸'],['vaca','🐮'],['hada','🧚'],
+    ['nube','☁️'],['flor','🌸'],['foca','🦭'],['taza','☕'],['dado','🎲'],['lazo','🎀'],
+    ['pera','🍐'],['bota','👢'],['mesa','🪑'],['cama','🛏️'],['rosa','🌹'],['seta','🍄'],['coco','🥥'],['nido','🪺'],
+    ['tarta','🎂'],['fresa','🍓'],['pelota','⚽'],['corona','👑'],['globo','🎈'],
+  ].map(([word, e]) => ({ word, e }));
+
+  const SYL_C = ['M','P','L','S','T','N','D','B','F'];
+  const SYL_V = ['A','E','I','O','U'];
+
+  const NUMW = ['cero','uno','dos','tres','cuatro','cinco','seis','siete','ocho','nueve','diez','once','doce','trece','catorce','quince','dieciséis','diecisiete','dieciocho','diecinueve','veinte'];
+  const THINGS = ['🍓','🌸','🦋','⭐','🧁','🎈','🐞','🍭','🌼','💖','🐣','🍒','🐠','🦄','🍩'];
+
+  const STICKERS = ['🦄','🌈','🧁','🦋','🌸','🍓','👑','🐱','🎀','🍭','🐰','🌙','🍦','🐬','💎','🌻','🐼','🍩','🧚','🦩','🐢','🍉','🎠','🐝','🌟','🦊','🍰','🐙','🪐','🏰'];
+
+  const EMOJIS = ['👧','👦','👩','👨','👵','👴','👶','🐶','🐱','🐰','🐴','🦄','🧸','🎀','🎈','⚽','🚲','🚗','🏠','🌳','🌈','⭐','🎂','🍪','🍎','🍓','🍕','📚','🎨','🎵','🛁','🌊'];
+
+  const PRAISE = ['¡Muy bien!', '¡Genial!', '¡Bravo!', '¡Fenomenal!', '¡Eso es!', '¡Qué lista!', '¡Estupendo!', '¡Increíble!'];
+  const PRAISE_SAY = ['¡Muy bien, ' + NAME + '!', '¡Genial!', '¡Bravo!', '¡Fenomenal!', '¡Eso es!', '¡Qué lista eres!', '¡Estupendo, ' + NAME + '!', '¡Increíble!'];
+  const OOPS = ['¡Casi!', '¡Uy! Otra vez', '¡Tú puedes!', 'Prueba otra'];
+
+  function baseLetter(c) {
+    c = c.toUpperCase();
+    if (c === 'Ñ') return 'Ñ';
+    return c.normalize('NFD').replace(/[̀-ͯ]/g, '')[0];
+  }
+  const firstLetter = w => baseLetter(w[0]);
+  const letterName = l => (BY[baseLetter(l)] || { name: l }).name;
+
+  // ---------- guardado ----------
+  const store = { get: (k, d) => LS.get(k, d), set(k, v) { const ok = LS.set(k, v); Cloud.touch(); return ok; } };
+  const hot = {};
+  let stars = hot.stars ?? store.get('stars', 0);
+  let caseMode = hot.caseMode ?? store.get('case', 'upper');
+  let stats = store.get('stats', null) || {};
+  stats.letters = stats.letters || {}; stats.numbers = stats.numbers || {}; stats.traced = stats.traced || {}; stats.games = stats.games || {};
+  let myWords = store.get('words', null) || [];
+  const isName = w => w[0] !== w[0].toLowerCase();
+  const whoSay = w => w.who ? ` Es ${w.who}.` : '';
+  let streak = 0, stickerPending = null, cOff = 0;
+
+  const saveStats = () => store.set('stats', stats);
+  function push(map, key, ok) { const a = map[key] = map[key] || []; a.push(ok ? 1 : 0); if (a.length > 12) a.shift(); saveStats(); }
+  const record = (letter, ok) => push(stats.letters, baseLetter(letter), ok);
+  const recordN = (n, ok) => push(stats.numbers, String(n), ok);
+  function tally(game, ok) { const g = stats.games[game] = stats.games[game] || [0, 0]; g[ok ? 0 : 1]++; saveStats(); }
+  function statusOf(a) {
+    a = a || [];
+    if (!a.length) return 'new';
+    const last = a.slice(-5), r = last.reduce((s, x) => s + x, 0) / last.length;
+    if (last.length >= 3 && r >= .8) return 'ok';
+    if (last.length >= 2 && r < .5) return 'hard';
+    return 'learn';
+  }
+  const status = l => statusOf(stats.letters[l]);
+  const statusN = n => statusOf(stats.numbers[String(n)]);
+  const WEIGHT = { new: 1.6, learn: 2, hard: 3.2, ok: .6 };
+  function weightedPick(items, st) {
+    const ws = items.map(x => WEIGHT[st(x)]);
+    let r = Math.random() * ws.reduce((a, b) => a + b, 0);
+    for (let i = 0; i < items.length; i++) { r -= ws[i]; if (r <= 0) return items[i]; }
+    return items[items.length - 1];
+  }
+
+  const app = document.getElementById('app');
+  const rand = n => Math.floor(Math.random() * n);
+  const pick = a => a[rand(a.length)];
+  const shuffle = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = rand(i + 1); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+  const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;' }[c]));
+  const pic = e => e && e.startsWith('data:') ? `<img src="${e}" alt="">` : esc(e || '⭐');
+  const show = l => caseMode === 'lower' ? l.toLowerCase() : caseMode === 'mix' ? (Math.random() < .5 ? l : l.toLowerCase()) : l;
+  const showWord = w => caseMode === 'upper' ? w.toUpperCase() : isName(w) ? w[0] + w.slice(1).toLowerCase() : w.toLowerCase();
+  const letterPool = () => ABC.filter(x => !RARE.includes(x.l) || stars > 40);
+  const numMax = () => stars < 40 ? 10 : 20;
+
+  // ---------- Lila ----------
+  function lila(mood, text) {
+    const m = document.querySelector('.buddy .mascot'), b = document.querySelector('.buddy .bubble');
+    if (b && text != null) b.textContent = text;
+    if (!m) return;
+    m.classList.remove('yay', 'oops'); void m.offsetWidth;
+    if (mood) m.classList.add(mood);
+  }
+  const buddy = text => `<div class="buddy"><div class="mascot">${LILA}</div><div class="bubble" aria-live="polite">${esc(text || '')}</div></div>`;
+
+  // ---------- voz ----------
+  let voice = null;
+  function loadVoice() {
+    const vs = (window.speechSynthesis?.getVoices?.() || []).filter(v => /^es/i.test(v.lang));
+    voice = vs.find(v => /es[-_]ES/i.test(v.lang) && /google|mónica|monica|paulina|lucia|helena|elvira/i.test(v.name))
+         || vs.find(v => /es[-_]ES/i.test(v.lang)) || vs[0] || null;
+  }
+  if (window.speechSynthesis) { loadVoice(); speechSynthesis.onvoiceschanged = loadVoice; }
+  function say(text, after) {
+    if (!window.speechSynthesis) { if (after) setTimeout(after, 1100); return; }
+    speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang = voice?.lang || 'es-ES';
+    if (voice) u.voice = voice;
+    u.rate = .85; u.pitch = 1.2;
+    if (after) { let done = false; const go = () => { if (!done) { done = true; after(); } }; u.onend = go; setTimeout(go, 5500); }
+    speechSynthesis.speak(u);
+  }
+
+  // ---------- premios ----------
+  let roundId = 0;
+  const later = (fn, ms) => { const id = roundId; setTimeout(() => { if (id === roundId) fn(); }, ms); };
+  function praise(text, nextFn, wait = 350) {
+    const id = roundId;
+    say(text, () => {
+      if (id !== roundId) return;
+      if (stickerPending != null) showSticker(stickerPending, () => { if (id === roundId) nextFn(); });
+      else later(nextFn, wait);
+    });
+  }
+  function reward() {
+    stars++; streak++;
+    store.set('stars', stars);
+    if (stars % 10 === 0 && stars / 10 <= STICKERS.length) stickerPending = stars / 10 - 1;
+    const s = document.querySelector('.stars');
+    if (s) { s.querySelector('b').textContent = stars; s.classList.remove('pop'); void s.offsetWidth; s.classList.add('pop'); }
+    lila('yay', pick(PRAISE));
+    confetti(streak % 5 === 0 ? 60 : 20);
+    if (streak % 5 === 0) {
+      const c = document.createElement('div');
+      c.className = 'cheer'; c.textContent = pick(PRAISE);
+      document.body.appendChild(c); setTimeout(() => c.remove(), 1700);
+    }
+  }
+  function miss(text) { streak = 0; lila('oops', text || pick(OOPS)); }
+  function confetti(n) {
+    const party = document.getElementById('party');
+    const bits = ['⭐','🌟','✨','💖','💗','🌸','🎀','🦄','🌈'];
+    for (let i = 0; i < n; i++) {
+      const b = document.createElement('span');
+      b.className = 'bit'; b.textContent = pick(bits);
+      b.style.left = Math.random() * 100 + '%';
+      b.style.fontSize = (22 + Math.random() * 20) + 'px';
+      b.style.animationDuration = (1.5 + Math.random() * 1.5) + 's';
+      b.style.animationDelay = Math.random() * .4 + 's';
+      party.appendChild(b); setTimeout(() => b.remove(), 3600);
+    }
+  }
+  function showSticker(i, done) {
+    stickerPending = null;
+    const el = document.createElement('div');
+    el.className = 'card';
+    el.innerHTML = `<div class="card-in" role="dialog" aria-label="Pegatina nueva">
+      <p class="ask" style="font-size:34px">¡Pegatina nueva!</p>
+      <div class="newstk">${STICKERS[i]}</div>
+      <p style="margin:0;font-size:20px;color:var(--ink-soft);font-weight:500">Ya tienes ${i + 1} en tu álbum</p>
+      <div class="row"><button class="pill" id="ok">¡Qué bonita!</button></div></div>`;
+    document.body.appendChild(el);
+    confetti(70);
+    say(`¡Pegatina nueva, ${NAME}! Ya tienes ${i + 1}.`);
+    el.querySelector('#ok').onclick = () => { el.remove(); window.speechSynthesis?.cancel(); done && done(); };
+  }
+
+  function screen(html, again, bubble) {
+    roundId++;
+    app.innerHTML = `<div class="bar">
+      <button class="round" id="home" aria-label="Volver al menú">🏠</button>
+      <div class="stars" aria-label="Estrellas"><span class="s">⭐</span><b>${stars}</b></div>
+      ${again ? '<button class="round" id="again" aria-label="Escuchar otra vez">🔊</button>' : '<span class="round" style="visibility:hidden"></span>'}
+    </div>` + html + (bubble === false ? '' : buddy(bubble));
+    document.getElementById('home').onclick = home;
+    if (again) document.getElementById('again').onclick = again;
+    cOff = rand(5);
+  }
+
+  // ---------- portada ----------
+  function home() {
+    roundId++;
+    window.speechSynthesis?.cancel();
+    streak = 0;
+    const card = (g, k, badge, title, sub, em) => {
+      const lk = gameLock(g);
+      return `<button class="game k-${k}${lk ? ' locked' : ''}" data-g="${g}" data-lock="${lk}"><span class="badge${em || lk ? ' em' : ''}">${lk ? '🔒' : badge}</span><b>${title}</b><small>${lk ? 'Se abre en la parada ' + lk : sub}</small></button>`;
+    };
+    const days = dayStreak();
+    app.innerHTML = `
+      <div class="bar">
+        <div class="barl"><button class="round" id="album" aria-label="Mis pegatinas">🎀</button><button class="round" id="mapb" aria-label="Mi camino">🗺️</button></div>
+        <div class="barl">${days ? `<div class="streak" aria-label="${days} días seguidos">🌸 ${days}</div>` : ''}<div class="stars"><span class="s">⭐</span><b>${stars}</b></div></div>
+      </div>
+      <div class="hero">
+        <div class="mascot" id="hlila" role="button" aria-label="Lila la unicornio">${LILA}</div>
+        <div class="hero-text">
+          <h1>Hola, <span class="name">${esc(NAME)}<span class="spark">✨</span></span></h1>
+          <p>Soy Lila. ¿Seguimos el camino?</p>
+        </div>
+      </div>
+      <button class="cta" id="go">
+        <span class="cta-t"><small>Parada ${G.stop + 1} de ${STOPS.length}</small><b>${esc(STOPS[G.stop].name)}</b><span class="meter"><i style="width:${Math.round(stopProgress(G.stop) * 100)}%"></i></span></span>
+        <span class="cta-b">▶ Jugar con Lila</span>
+      </button>
+      <p class="free">Juego libre</p>
+      <section class="sec">
+        <div class="sec-h"><h2>Letras</h2><span class="chip">Aa</span></div>
+        <div class="games">
+          ${card('find', 'pink', 'B?', 'Busca la letra', 'Escucha y toca')}
+          ${card('start', 'lilac', '🐱', '¿Cómo empieza?', '_ato', 1)}
+          ${card('syl', 'peach', 'ma', 'Sílabas', 'ma, me, mi, mo, mu')}
+          ${card('build', 'mint', 'sol', 'Forma palabras', 'Letra a letra')}
+          ${card('trace', 'sky', '✏️', 'Repasa', 'Con el dedo', 1)}
+          ${card('abc', 'butter', 'Aa', 'Abecedario', 'Toca y escucha')}
+        </div>
+      </section>
+      <section class="sec">
+        <div class="sec-h"><h2>Números</h2><span class="chip">123</span></div>
+        <div class="games">
+          ${card('nfind', 'sky', '3?', 'Busca el número', 'Escucha y toca')}
+          ${card('count', 'pink', '🍓', '¿Cuántos hay?', 'Cuenta y elige', 1)}
+          ${card('nums', 'lilac', '123', 'Los números', 'Del 0 al 20')}
+        </div>
+      </section>
+      <div class="foot">
+        <div class="cases"><span>Letras</span>
+          <div class="seg" role="group" aria-label="Tipo de letra">
+            <button data-c="upper" aria-pressed="${caseMode==='upper'}">ABC</button>
+            <button data-c="lower" aria-pressed="${caseMode==='lower'}">abc</button>
+            <button data-c="mix" aria-pressed="${caseMode==='mix'}">Aa</button>
+          </div>
+        </div>
+        <button class="hold" id="hold" aria-label="Zona de mayores: mantén pulsado"><i></i><span>Mayores · mantén pulsado</span></button>
+      </div>`;
+    const GAMES = { find, start, syl, build, trace, abc, nfind, count, nums };
+    app.querySelectorAll('.game').forEach(b => b.onclick = () => {
+      if (+b.dataset.lock) { say(`Este juego se abre en la parada ${b.dataset.lock}. ¡Sigue el camino!`); return; }
+      GAMES[b.dataset.g]();
+    });
+    document.getElementById('go').onclick = () => startSession();
+    document.getElementById('mapb').onclick = map;
+    app.querySelectorAll('.seg button').forEach(b => b.onclick = () => {
+      caseMode = b.dataset.c; store.set('case', caseMode);
+      app.querySelectorAll('.seg button').forEach(x => x.setAttribute('aria-pressed', x === b));
+    });
+    document.getElementById('album').onclick = album;
+    const hl = document.getElementById('hlila');
+    hl.onclick = () => { hl.classList.remove('yay'); void hl.offsetWidth; hl.classList.add('yay'); say(`¡Hola, ${NAME}! Soy Lila. ¿A qué jugamos?`); };
+    const h = document.getElementById('hold');
+    let t;
+    const stop = () => { clearTimeout(t); h.classList.remove('on'); };
+    h.addEventListener('pointerdown', e => { e.preventDefault(); h.classList.add('on'); t = setTimeout(grown, 1400); });
+    ['pointerup', 'pointerleave', 'pointercancel'].forEach(ev => h.addEventListener(ev, stop));
+    h.addEventListener('keydown', e => { if (e.key === 'Enter' && e.repeat) grown(); });
+    h.addEventListener('contextmenu', e => e.preventDefault());
+  }
+
+  // ---------- álbum ----------
+  function album() {
+    const have = Math.min(Math.floor(stars / 10), STICKERS.length);
+    const toNext = 10 - (stars % 10);
+    screen(`<div class="stage">
+      <p class="ask">Mis pegatinas</p>
+      ${have < STICKERS.length ? `<div class="meter" role="img" aria-label="Faltan ${toNext} estrellas"><i style="width:${(stars % 10) * 10}%"></i></div>
+      <p style="margin:-8px 0 0;font-size:20px;color:var(--ink-soft);font-weight:500">Te faltan ${toNext} ⭐ para la siguiente</p>` : ''}
+      <div class="album">${STICKERS.map((s, i) => i < have
+        ? `<button class="stk" style="--r:${(i * 37 % 17) - 8}deg" data-i="${i}" aria-label="Pegatina">${s}</button>`
+        : `<div class="stk locked">?</div>`).join('')}</div>
+    </div>`, null, have ? `¡Tienes ${have}! Toca una.` : 'Gana 10 estrellas y te doy una pegatina.');
+    app.querySelectorAll('.stk[data-i]').forEach(b => b.onclick = () => { b.animate?.([{ transform: 'scale(1.25) rotate(10deg)' }, { transform: 'none' }], { duration: 400 }); lila('yay'); });
+    say(have ? `Tienes ${have} pegatinas.` : 'Gana diez estrellas y te doy una pegatina.');
+  }
+
+  // ---------- 1. Busca la letra ----------
+  function find() {
+    const pool = letterPool();
+    const target = weightedPick(pool, x => status(x.l));
+    const others = shuffle(pool.filter(x => x.l !== target.l)).slice(0, stars > 15 ? 3 : 2);
+    const opts = shuffle([target, ...others]);
+    const ask = () => say(`¿Dónde está la ${target.name}?`);
+    screen(`<div class="stage">
+        <p class="ask">¿Dónde está la <span class="hl">${esc(target.name)}</span>?</p>
+        <div class="choices">${opts.map((o, i) => `<button class="tile c${(i + cOff) % 5}" data-l="${o.l}">${show(o.l)}</button>`).join('')}</div>
+      </div>`, ask);
+    ask();
+    let locked = false, missed = false;
+    app.querySelectorAll('.choices .tile').forEach(t => t.onclick = () => {
+      if (locked) return;
+      const l = t.dataset.l;
+      if (l === target.l) {
+        locked = true; t.classList.add('good'); reward();
+        if (!missed) { record(l, true); tally('find', true); }
+        praise(`${pick(PRAISE_SAY)} Es la ${target.name}, de ${target.word}.`, find);
+      } else {
+        t.classList.add('bad'); miss();
+        if (!missed) { missed = true; record(target.l, false); record(l, false); tally('find', false); }
+        say(`Esa es la ${letterName(l)}. ¡Prueba otra vez!`);
+      }
+    });
+  }
+
+  // ---------- 2. ¿Cómo empieza? ----------
+  function start() {
+    const custom = myWords.filter(w => BY[firstLetter(w.word)]);
+    const list = custom.length && Math.random() < .4 ? custom : START;
+    const w = weightedPick(list, x => status(firstLetter(x.word)));
+    const first = firstLetter(w.word);
+    const others = shuffle(ABC.filter(x => x.l !== first && !['Ñ', ...RARE].includes(x.l))).slice(0, stars > 25 ? 3 : 2).map(x => x.l);
+    const opts = shuffle([first, ...others]);
+    const shown = showWord(w.word);
+    const ask = () => say(`${w.word}. ¿Con qué letra empieza ${w.word}?`);
+    screen(`<div class="stage">
+        <p class="ask">¿Con qué letra empieza?</p>
+        <div class="picture tap" id="pic" role="button" aria-label="Escuchar la palabra">${pic(w.e)}</div>
+        <div class="word" aria-label="${esc(w.word)}"><span class="blank" id="blank">&nbsp;</span>${esc(shown.slice(1))}</div>
+        <div class="choices">${opts.map((l, i) => `<button class="tile c${(i + cOff) % 5}" data-l="${l}">${caseMode === 'upper' || isName(w.word) ? l : l.toLowerCase()}</button>`).join('')}</div>
+      </div>`, ask);
+    ask();
+    document.getElementById('pic').onclick = () => say(w.word);
+    let locked = false, missed = false;
+    app.querySelectorAll('.choices .tile').forEach(t => t.onclick = () => {
+      if (locked) return;
+      const l = t.dataset.l;
+      if (l === first) {
+        locked = true; t.classList.add('good'); reward();
+        if (!missed) { record(l, true); tally('start', true); }
+        const b = document.getElementById('blank'); b.textContent = shown[0]; b.style.color = 'var(--mint)'; b.style.borderColor = 'var(--mint)';
+        praise(`${pick(PRAISE_SAY)} ${w.word} empieza con la ${letterName(l)}.${whoSay(w)}`, start);
+      } else {
+        t.classList.add('bad'); miss();
+        if (!missed) { missed = true; record(first, false); tally('start', false); }
+        say(`Esa es la ${letterName(l)}. Escucha: ${w.word}.`);
+      }
+    });
+  }
+
+  // ---------- 3. Sílabas ----------
+  function syl() {
+    const pool = SYL_C.slice(0, Math.min(SYL_C.length, 4 + Math.floor(stars / 15)));
+    const c = weightedPick(pool, x => status(x)), v = pick(SYL_V);
+    const target = c + v;
+    const set = new Set([target]);
+    set.add(c + pick(SYL_V.filter(x => x !== v)));
+    set.add(pick(SYL_C.filter(x => x !== c)) + v);
+    if (stars > 30) while (set.size < 4) set.add(pick(SYL_C) + pick(SYL_V));
+    while (set.size < 3) set.add(pick(SYL_C) + pick(SYL_V));
+    const opts = shuffle([...set]);
+    const low = s => s.toLowerCase();
+    const disp = s => caseMode === 'upper' ? s : caseMode === 'lower' ? low(s) : s[0] + low(s[1]);
+    const ask = () => say(`¿Dónde está ${low(target)}?`);
+    screen(`<div class="stage">
+        <p class="ask">¿Dónde está <span class="hl">${disp(target)}</span>?</p>
+        <div class="sum" id="sum" aria-live="polite"></div>
+        <div class="choices">${opts.map((s, i) => `<button class="tile syl c${(i + cOff) % 5}" data-s="${s}">${disp(s)}</button>`).join('')}</div>
+      </div>`, ask);
+    ask();
+    let locked = false, missed = false;
+    app.querySelectorAll('.choices .tile').forEach(t => t.onclick = () => {
+      if (locked) return;
+      const s = t.dataset.s;
+      document.getElementById('sum').innerHTML = `<span style="color:var(--pink)">${disp(s[0])}</span><span class="p">+</span><span style="color:var(--lilac)">${caseMode === 'upper' ? s[1] : low(s[1])}</span><span class="p">=</span><span>${disp(s)}</span>`;
+      if (s === target) {
+        locked = true; t.classList.add('good'); reward();
+        if (!missed) { record(c, true); tally('syl', true); }
+        praise(`${letterName(s[0])} con ${low(s[1])}: ${low(s)}. ${pick(PRAISE_SAY)}`, syl);
+      } else {
+        t.classList.add('bad'); miss();
+        if (!missed) { missed = true; record(c, false); tally('syl', false); }
+        say(`${letterName(s[0])} con ${low(s[1])} hace ${low(s)}. Busca ${low(target)}.`);
+      }
+    });
+  }
+
+  // ---------- 4. Forma palabras ----------
+  function build() {
+    const custom = myWords.filter(w => w.word.length <= 8);
+    let list = BUILD.filter(x => stars < 20 ? x.word.length <= 4 : true);
+    if (custom.length && Math.random() < .4) list = custom;
+    const w = pick(list);
+    const letters = [...w.word.toUpperCase()];
+    const cap = isName(w.word);
+    const disp = (l, i) => caseMode === 'upper' || (cap && i === 0) ? l : l.toLowerCase();
+    let pos = 0, missedHere = false;
+    const ask = () => say(`Vamos a escribir ${w.word}. ${letters.map(letterName).join(', ')}.`);
+    screen(`<div class="stage">
+        <p class="ask">Forma la palabra</p>
+        <div class="picture tap" id="pic" role="button" aria-label="Escuchar la palabra">${pic(w.e)}</div>
+        <div class="slots">${letters.map((l, i) => `<div class="slot${i === 0 ? ' next' : ''}">${disp(l, i)}</div>`).join('')}</div>
+        <div class="choices small">${shuffle(letters.map((l, i) => [l, i])).map(([l, i], k) => `<button class="tile c${k % 5}" data-l="${l}">${disp(l, i)}</button>`).join('')}</div>
+      </div>`, ask);
+    say(`Vamos a escribir ${w.word}.`);
+    document.getElementById('pic').onclick = () => say(w.word);
+    const slots = app.querySelectorAll('.slot');
+    app.querySelectorAll('.choices .tile').forEach(t => t.onclick = () => {
+      if (pos >= letters.length || t.classList.contains('used')) return;
+      const l = t.dataset.l;
+      if (l === letters[pos]) {
+        if (!missedHere) record(l, true);
+        missedHere = false;
+        t.classList.add('used');
+        slots[pos].classList.remove('next'); slots[pos].classList.add('full');
+        pos++;
+        if (pos < letters.length) { slots[pos].classList.add('next'); say(letterName(l)); }
+        else {
+          reward(); tally('build', true);
+          praise(`${letters.map(letterName).join(', ')}. ¡${w.word}!${whoSay(w)} ${pick(PRAISE_SAY)}`, build, 500);
+        }
+      } else {
+        t.classList.remove('bad'); void t.offsetWidth; t.classList.add('bad');
+        setTimeout(() => t.classList.remove('bad'), 600);
+        miss();
+        if (!missedHere) { missedHere = true; record(letters[pos], false); tally('build', false); }
+        say(`Esa es la ${letterName(l)}. Busca la ${letterName(letters[pos])}.`);
+      }
+    });
+  }
+
+  // ---------- 5. Repasa (letras y números) ----------
+  function trace() {
+    const isNum = stars > 5 && Math.random() < .25;
+    let ch, name, key;
+    if (isNum) {
+      const n = weightedPick([...Array(10).keys()], statusN);
+      ch = String(n); name = `el ${NUMW[n]}`; key = '#' + n;
+    } else {
+      const target = weightedPick(letterPool(), x => status(x.l));
+      ch = caseMode === 'lower' ? target.l.toLowerCase() : caseMode === 'mix' ? show(target.l) : target.l;
+      name = `la ${target.name}`; key = target.l;
+    }
+    const ask = () => say(`Repasa ${name} con el dedo.`);
+    screen(`<div class="stage">
+        <p class="ask">Repasa <span class="hl">${esc(name)}</span></p>
+        <div class="trace" id="tr"><canvas id="guide"></canvas><canvas id="ink"></canvas></div>
+        <div class="row"><button class="pill alt" id="clear">Borrar</button><button class="pill alt" id="skip">Otra</button></div>
+      </div>`, ask, 'Sigue los puntitos');
+    ask();
+    document.getElementById('skip').onclick = trace;
+    const myRound = roundId;
+    const ready = document.fonts?.load ? document.fonts.load('700 100px Andika') : Promise.resolve();
+    ready.catch(() => {}).then(() => { if (myRound === roundId) setupTrace(ch, name, key); });
+  }
+  function setupTrace(ch, name, key) {
+    const box = document.getElementById('tr');
+    const guide = document.getElementById('guide'), ink = document.getElementById('ink');
+    const W = Math.round(box.clientWidth), dpr = Math.min(window.devicePixelRatio || 1, 2);
+    [guide, ink].forEach(c => { c.width = W * dpr; c.height = W * dpr; });
+    const g = guide.getContext('2d'), k = ink.getContext('2d');
+    g.scale(dpr, dpr); k.scale(dpr, dpr);
+    const css = getComputedStyle(document.documentElement);
+    const col = n => css.getPropertyValue(n).trim();
+    const font = `700 ${Math.round(W * .74)}px Andika, "Comic Sans MS", sans-serif`;
+    const place = ctx => { ctx.font = font; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; };
+    const yMid = W * .54;
+
+    function drawGuide(color) {
+      g.clearRect(0, 0, W, W);
+      g.strokeStyle = col('--line'); g.lineWidth = 2;
+      [.22, .5, .78].forEach(f => { g.beginPath(); g.moveTo(W * .06, W * f); g.lineTo(W * .94, W * f); g.stroke(); });
+      place(g);
+      g.fillStyle = color || col('--ghost'); g.fillText(ch, W / 2, yMid);
+      if (!color) {
+        g.setLineDash([W * .016, W * .022]); g.lineWidth = 3.5; g.lineCap = 'round'; g.strokeStyle = col('--lilac');
+        g.strokeText(ch, W / 2, yMid); g.setLineDash([]);
+      }
+    }
+    drawGuide();
+
+    const S = Math.min(W, 320), sc = S / W;
+    const mk = () => { const c = document.createElement('canvas'); c.width = S; c.height = S; const x = c.getContext('2d', { willReadFrequently: true }); x.scale(sc, sc); place(x); return x; };
+    const mask = mk(); mask.fillText(ch, W / 2, yMid);
+    const wide = mk(); wide.fillText(ch, W / 2, yMid); wide.lineWidth = W * .1; wide.lineJoin = 'round'; wide.strokeText(ch, W / 2, yMid);
+    const user = mk(); user.lineCap = 'round'; user.lineJoin = 'round'; user.lineWidth = W * .09;
+    const mData = mask.getImageData(0, 0, S, S).data, wData = wide.getImageData(0, 0, S, S).data;
+    let maskN = 0; for (let i = 3; i < mData.length; i += 16) if (mData[i] > 100) maskN++;
+
+    const colors = [col('--pink'), col('--lilac'), col('--sky'), col('--mint'), col('--peach')];
+    let drawing = false, last = null, strokes = 0, done = false;
+    const pt = e => { const r = ink.getBoundingClientRect(); return [(e.clientX - r.left) * W / r.width, (e.clientY - r.top) * W / r.height]; };
+    function line(a, b) {
+      k.beginPath(); k.moveTo(a[0], a[1]); k.lineTo(b[0], b[1]); k.stroke();
+      user.beginPath(); user.moveTo(a[0], a[1]); user.lineTo(b[0], b[1]); user.stroke();
+    }
+    ink.addEventListener('pointerdown', e => {
+      if (done) return;
+      e.preventDefault(); ink.setPointerCapture(e.pointerId);
+      drawing = true; last = pt(e);
+      k.strokeStyle = colors[strokes % colors.length]; k.lineWidth = W * .075; k.lineCap = 'round'; k.lineJoin = 'round';
+      line(last, [last[0] + .1, last[1] + .1]);
+    });
+    ink.addEventListener('pointermove', e => { if (!drawing) return; const p = pt(e); line(last, p); last = p; });
+    const end = () => { if (!drawing) return; drawing = false; strokes++; check(); };
+    ink.addEventListener('pointerup', end); ink.addEventListener('pointercancel', end);
+
+    function check() {
+      const u = user.getImageData(0, 0, S, S).data;
+      let cov = 0, inkN = 0, out = 0;
+      for (let i = 3; i < u.length; i += 16) {
+        const on = u[i] > 100;
+        if (mData[i] > 100 && on) cov++;
+        if (on) { inkN++; if (wData[i] < 60) out++; }
+      }
+      const coverage = cov / Math.max(1, maskN), outside = out / Math.max(1, inkN);
+      if (coverage >= .62 && outside <= .4) {
+        done = true; reward();
+        stats.traced[key] = (stats.traced[key] || 0) + 1; tally('trace', true);
+        k.clearRect(0, 0, W, W); drawGuide(col('--mint'));
+        praise(`${pick(PRAISE_SAY)} Has hecho ${name}.`, trace, 700);
+      } else if (outside > .55 && inkN > 40) {
+        lila('oops', 'Por dentro de la letra');
+        say('Intenta ir por dentro.');
+      } else if (coverage > .3) {
+        lila(null, '¡Sigue, sigue!');
+      }
+    }
+    document.getElementById('clear').onclick = () => {
+      if (done) return;
+      k.clearRect(0, 0, W, W); user.clearRect(0, 0, W, W); strokes = 0;
+      lila(null, 'Sigue los puntitos');
+    };
+  }
+
+  // ---------- 6. Abecedario ----------
+  function abc() {
+    screen(`<div class="stage">
+        <p class="ask">Toca una letra</p>
+        <div class="abc">${ABC.map((x, i) => `<button class="tile c${i % 5}" data-l="${x.l}">${x.l}<small>${x.l.toLowerCase()}</small></button>`).join('')}</div>
+      </div>`, null, false);
+    app.querySelectorAll('.abc .tile').forEach(t => t.onclick = () => letterCard(BY[t.dataset.l]));
+  }
+  function overlay(inner, line) {
+    const el = document.createElement('div');
+    el.className = 'card';
+    el.innerHTML = `<div class="card-in" role="dialog">${inner}
+      <div class="row"><button class="pill alt" id="hear">🔊 Otra vez</button><button class="pill" id="close">Vale</button></div></div>`;
+    document.body.appendChild(el);
+    say(line);
+    const close = () => { el.remove(); window.speechSynthesis?.cancel(); };
+    el.querySelector('#hear').onclick = () => say(line);
+    el.querySelector('#close').onclick = close;
+    el.onclick = e => { if (e.target === el) close(); };
+  }
+  function letterCard(x) {
+    const lower = x.l.toLowerCase();
+    const i = x.word.toLowerCase().indexOf(lower);
+    const word = i < 0 ? esc(x.word) : esc(x.word.slice(0, i)) + `<mark>${esc(x.word[i])}</mark>` + esc(x.word.slice(i + 1));
+    const starts = firstLetter(x.word) === x.l;
+    overlay(`<div class="big">${x.l}<span>${lower}</span></div><div class="em">${x.e}</div><div class="w">${word}</div>`,
+      starts ? `La ${x.name}, de ${x.word}.` : `La ${x.name}. ${x.word} lleva la ${x.name}.`);
+  }
+
+  // ---------- 7. Busca el número ----------
+  function nfind() {
+    const max = numMax();
+    const nums = [...Array(max + 1).keys()];
+    const n = weightedPick(nums, statusN);
+    const others = shuffle(nums.filter(x => x !== n)).slice(0, stars > 15 ? 3 : 2);
+    const opts = shuffle([n, ...others]);
+    const ask = () => say(`¿Dónde está el ${NUMW[n]}?`);
+    screen(`<div class="stage">
+        <p class="ask">¿Dónde está el <span class="hl">${NUMW[n]}</span>?</p>
+        <div class="choices">${opts.map((o, i) => `<button class="tile c${(i + cOff) % 5}" data-n="${o}">${o}</button>`).join('')}</div>
+      </div>`, ask);
+    ask();
+    let locked = false, missed = false;
+    app.querySelectorAll('.choices .tile').forEach(t => t.onclick = () => {
+      if (locked) return;
+      const v = +t.dataset.n;
+      if (v === n) {
+        locked = true; t.classList.add('good'); reward();
+        if (!missed) { recordN(n, true); tally('nfind', true); }
+        praise(`${pick(PRAISE_SAY)} Es el ${NUMW[n]}.`, nfind);
+      } else {
+        t.classList.add('bad'); miss();
+        if (!missed) { missed = true; recordN(n, false); tally('nfind', false); }
+        say(`Ese es el ${NUMW[v]}. ¡Prueba otra vez!`);
+      }
+    });
+  }
+
+  // ---------- 8. ¿Cuántos hay? ----------
+  function count() {
+    const nums = [...Array(10).keys()].map(x => x + 1).filter(x => stars > 10 || x <= 6);
+    const n = weightedPick(nums, statusN);
+    const thing = pick(THINGS);
+    const set = new Set([n]);
+    [n - 1, n + 1, n + 2, n - 2].filter(x => x >= 1 && x <= 10).forEach(x => { if (set.size < (stars > 20 ? 4 : 3)) set.add(x); });
+    const opts = shuffle([...set]);
+    const ask = () => say('¿Cuántos hay? Tócalos para contar.');
+    screen(`<div class="stage">
+        <p class="ask">¿Cuántos hay?</p>
+        <div class="count" id="objs">${Array.from({ length: n }, (_, i) => `<button class="obj" style="transform:rotate(${rand(24) - 12}deg)" aria-label="Contar">${thing}</button>`).join('')}</div>
+        <div class="choices">${opts.map((o, i) => `<button class="tile c${(i + cOff) % 5}" data-n="${o}">${o}</button>`).join('')}</div>
+      </div>`, ask, 'Toca cada uno para contar');
+    ask();
+    let counted = 0;
+    app.querySelectorAll('.obj').forEach(o => o.onclick = () => {
+      if (o.classList.contains('done')) { say(NUMW[+o.dataset.n]); return; }
+      counted++; o.dataset.n = counted; o.classList.add('done'); o.style.transform = '';
+      say(NUMW[counted]);
+      if (counted === n) lila(null, `¡${counted}!`);
+    });
+    let locked = false, missed = false;
+    app.querySelectorAll('.choices .tile').forEach(t => t.onclick = () => {
+      if (locked) return;
+      const v = +t.dataset.n;
+      if (v === n) {
+        locked = true; t.classList.add('good'); reward();
+        if (!missed) { recordN(n, true); tally('count', true); }
+        praise(`${pick(PRAISE_SAY)} Hay ${NUMW[n]}.`, count);
+      } else {
+        t.classList.add('bad'); miss('¡Cuenta otra vez!');
+        if (!missed) { missed = true; recordN(n, false); tally('count', false); }
+        say(`Ese es el ${NUMW[v]}. Vamos a contar despacio.`);
+      }
+    });
+  }
+
+  // ---------- 9. Los números ----------
+  function nums() {
+    screen(`<div class="stage">
+        <p class="ask">Toca un número</p>
+        <div class="abc">${NUMW.map((_, i) => `<button class="tile c${i % 5}" data-n="${i}">${i}</button>`).join('')}</div>
+      </div>`, null, false);
+    app.querySelectorAll('.abc .tile').forEach(t => t.onclick = () => numCard(+t.dataset.n));
+  }
+  function numCard(n) {
+    const thing = THINGS[n % THINGS.length];
+    const frames = n === 0 ? '<div class="frame">' + '<span></span>'.repeat(10) + '</div>'
+      : Array.from({ length: Math.ceil(n / 10) }, (_, f) => '<div class="frame">' +
+          Array.from({ length: 10 }, (_, i) => `<span>${f * 10 + i < n ? thing : ''}</span>`).join('') + '</div>').join('');
+    overlay(`<div class="big">${n}</div><div class="w">${NUMW[n]}</div><div class="frames">${frames}</div>`,
+      n === 0 ? 'Cero. No hay ninguno.' : `${NUMW[n]}. ${Array.from({ length: n }, (_, i) => NUMW[i + 1]).join(', ')}.`);
+  }
+
+  // ---------- Camino guiado ----------
+  const VOW = ['A','E','I','O','U'];
+  const cross = cs => cs.flatMap(c => VOW.map(v => 'S:' + c + v));
+  const range = (a, b) => Array.from({ length: b - a + 1 }, (_, i) => a + i);
+  const GBUILD = { sol:'☀️', sal:'🧂', pan:'🍞', mesa:'🪑', pato:'🦆', sopa:'🍲', mapa:'🗺️', luna:'🌙', pelo:'💇', dedo:'☝️', nido:'🪺', moto:'🏍️' };
+  const GREAD = { gato:'🐱', casa:'🏠', oso:'🐻', luna:'🌙', pato:'🦆', sol:'☀️', flor:'🌸', mano:'✋', rosa:'🌹', tarta:'🎂', hada:'🧚', vaca:'🐮' };
+  const GPHR = { 'un oso':'🐻', 'dos osos':'🐻🐻', 'un gato':'🐱', 'dos gatos':'🐱🐱', 'tres gatos':'🐱🐱🐱', 'un pato':'🦆', 'tres patos':'🦆🦆🦆', 'una flor':'🌸', 'dos flores':'🌸🌸', 'tres flores':'🌸🌸🌸', 'una casa':'🏠', 'dos casas':'🏠🏠' };
+  const STOPS = [
+    { name: 'Las vocales', icon: 'A', k: 'pink', items: VOW.map(l => 'L:' + l) },
+    { name: 'Números del 0 al 5', icon: '3', k: 'sky', items: range(0, 5).map(n => 'N:' + n) },
+    { name: 'M, P, L y S', icon: 'M', k: 'lilac', items: ['M','P','L','S'].map(l => 'L:' + l) },
+    { name: 'Contar hasta 5', icon: '🍓', k: 'peach', items: range(1, 5).map(n => 'Q:' + n) },
+    { name: 'Sílabas', icon: 'MA', k: 'mint', items: cross(['M','P','L','S']) },
+    { name: 'Números del 6 al 10', icon: '8', k: 'sky', items: range(6, 10).map(n => 'N:' + n) },
+    { name: 'T, N y D', icon: 'T', k: 'pink', items: [...['T','N','D'].map(l => 'L:' + l), ...cross(['T','N','D'])] },
+    { name: 'Contar hasta 10', icon: '🦋', k: 'peach', items: range(6, 10).map(n => 'Q:' + n) },
+    { name: 'Primeras palabras', icon: '✨', k: 'butter', items: Object.keys(GBUILD).map(w => 'B:' + w) },
+    { name: 'B, F, R, C y G', icon: 'B', k: 'lilac', items: ['B','F','R','C','G'].map(l => 'L:' + l) },
+    { name: 'Más letras', icon: 'Z', k: 'mint', items: ['H','J','V','Z','Ñ','Q','Y','K','W','X'].map(l => 'L:' + l) },
+    { name: 'Letras pequeñas', icon: 'a', k: 'pink', items: ABC.filter(x => !RARE.includes(x.l)).map(x => 'l:' + x.l) },
+    { name: 'Números del 11 al 20', icon: '15', k: 'sky', items: range(11, 20).map(n => 'N:' + n) },
+    { name: 'Leo palabras', icon: '📖', k: 'butter', items: Object.keys(GREAD).map(w => 'W:' + w) },
+    { name: 'Uno más', icon: '+1', k: 'peach', items: range(1, 9).map(n => 'A:' + n) },
+    { name: 'Leo frases', icon: '💬', k: 'lilac', items: Object.keys(GPHR).map(w => 'F:' + w) },
+  ];
+  const LOWER_STOP = 11, SYL_STOP = 4, BUILD_STOP = 8;
+  const isEm = s => /\p{Extended_Pictographic}/u.test(s);
+
+  let G = store.get('guide', null) || {};
+  G.stop = Math.min(G.stop || 0, STOPS.length - 1); G.items = G.items || {}; G.days = G.days || []; G.sessions = G.sessions || 0;
+  const saveG = () => store.set('guide', G);
+  const dayNum = () => { const d = new Date(); return Math.floor((d.getTime() - d.getTimezoneOffset() * 60000) / 86400000); };
+  const INTERVAL = [0, 1, 2, 4, 7, 14];
+  const gi = id => G.items[id] || { b: 0, due: 0, seen: 0, lapses: 0 };
+  // Escalones: acierto a la primera sube (solo si ya tocaba repasarlo), fallo baja. Escalón 3 = acertado en 3 días distintos.
+  function grade(id, ok) {
+    const t = dayNum(), it = G.items[id] = gi(id);
+    const first = it.seen === 0; it.seen++;
+    if (ok) {
+      if (first) it.b = 2; else if (it.b === 0) it.b = 1; else if (t >= it.due) it.b = Math.min(5, it.b + 1); else { saveG(); return; }
+      it.due = t + INTERVAL[it.b];
+    } else { it.lapses++; it.b = it.b >= 2 ? 1 : 0; it.due = t; }
+    const k = id[0], v = id.slice(2);
+    if (k === 'L' || k === 'l') record(v, ok); else if (k === 'S') record(v[0], ok); else if (k === 'N' || k === 'Q') recordN(v, ok);
+    saveG();
+  }
+  const stopProgress = i => STOPS[i].items.filter(id => gi(id).b >= 1).length / STOPS[i].items.length;
+  const stopDone = i => STOPS[i].items.every(id => gi(id).seen) && stopProgress(i) >= .8;
+  function dayStreak() {
+    const t = dayNum(), set = new Set(G.days);
+    let d = set.has(t) ? t : t - 1, n = 0;
+    while (set.has(d)) { n++; d--; }
+    return n;
+  }
+  function label(id) {
+    const k = id[0], v = id.slice(2);
+    return k === 'L' ? v : k === 'l' ? v.toLowerCase() : k === 'S' ? v : k === 'N' ? v : k === 'Q' ? `contar ${v}` : k === 'A' ? `${v}+1` : v;
+  }
+  const gameLock = g => G.unlockAll ? 0 : g === 'syl' && G.stop < SYL_STOP ? SYL_STOP + 1 : g === 'build' && G.stop < BUILD_STOP ? BUILD_STOP + 1 : 0;
+
+  function buildQueue(si) {
+    const t = dayNum(), cur = STOPS[si].items;
+    const prev = STOPS.slice(0, si).flatMap(s => s.items).filter(id => gi(id).seen);
+    const due = shuffle(prev.filter(id => gi(id).due <= t)).sort((a, b) => gi(a).due - gi(b).due).slice(0, 3);
+    const rank = id => { const it = gi(id); return it.seen && it.b === 0 ? 0 : !it.seen ? 1 : it.due <= t ? 2 : 3 + it.b; };
+    const sorted = cur.map((id, i) => [id, i]).sort((a, b) => rank(a[0]) - rank(b[0]) || a[1] - b[1]).map(x => x[0]);
+    const n = 10 - due.length, main = [];
+    for (let i = 0; i < n; i++) main.push(sorted[i % sorted.length]);
+    due.forEach((id, i) => main.splice(Math.min(main.length, 2 + i * 3), 0, id));
+    return main;
+  }
+
+  let ses = null;
+  function startSession(si = G.stop) {
+    ses = { si, q: buildQueue(si), i: 0, ok: 0, newly: [], requeued: new Set() };
+    nextRound();
+  }
+  function nextRound() {
+    if (ses.i >= ses.q.length) return endSession();
+    const id = ses.q[ses.i];
+    ROUND[id[0]](id.slice(2), id, firstTry => {
+      const before = gi(id).b;
+      grade(id, firstTry);
+      if (firstTry) { ses.ok++; if (before === 0 && !ses.newly.includes(id)) ses.newly.push(id); }
+      else if (!ses.requeued.has(id) && ses.q.length < 14) { ses.requeued.add(id); ses.q.splice(Math.min(ses.q.length, ses.i + 3), 0, id); }
+      ses.i++; nextRound();
+    });
+  }
+  function gscreen(html, again, bubble) {
+    screen(`<div class="prog" role="img" aria-label="Ronda ${ses.i + 1} de ${ses.q.length}">${ses.q.map((_, j) => `<i class="${j < ses.i ? 'on' : j === ses.i ? 'now' : ''}"></i>`).join('')}</div>` + html, again, bubble);
+  }
+  function endSession() {
+    const t = dayNum();
+    if (!G.days.includes(t)) G.days.push(t);
+    G.days = G.days.slice(-400); G.sessions++;
+    let advanced = false;
+    if (ses.si === G.stop && stopDone(G.stop) && G.stop < STOPS.length - 1) { G.stop++; advanced = true; }
+    saveG();
+    const n = dayStreak(), rounds = ses.q.length;
+    screen(`<div class="stage">
+      <div class="mascot big yay">${LILA}</div>
+      <p class="ask">${advanced ? '¡Parada superada!' : `¡Muy bien, ${esc(NAME)}!`}</p>
+      <p class="sub">${advanced ? `Ahora vamos a: <b>${esc(STOPS[G.stop].name)}</b>` : `Has acertado <b>${ses.ok} de ${rounds}</b> a la primera`}</p>
+      ${ses.newly.length ? `<p class="sub">Hoy has aprendido</p><div class="chips">${ses.newly.slice(0, 12).map(id => `<span>${esc(label(id))}</span>`).join('')}</div>` : ''}
+      <p class="sub">🌸 ${n} ${n === 1 ? 'día' : 'días seguidos'} jugando</p>
+      <div class="row"><button class="pill alt" id="more">Jugar otra vez</button><button class="pill" id="tomap">Ver mi camino</button></div>
+    </div>`, null, false);
+    confetti(advanced ? 90 : 40);
+    say(advanced ? `¡Parada superada! Ahora vamos a ${STOPS[G.stop].name}.` : `¡Muy bien, ${NAME}! Has terminado por hoy. ¡Hasta mañana!`);
+    document.getElementById('more').onclick = () => startSession();
+    document.getElementById('tomap').onclick = map;
+  }
+
+  function choiceRound(o, done) {
+    const ask = () => say(o.say);
+    gscreen(`<div class="stage">
+      <p class="ask">${o.ask}</p>${o.top || ''}
+      <div class="choices">${o.opts.map((x, i) => `<button class="tile ${o.cls || ''} c${(i + cOff) % 5}" data-v="${esc(x.v)}">${x.html}</button>`).join('')}</div>
+    </div>`, ask, o.bubble);
+    ask(); if (o.setup) o.setup();
+    let locked = false, missed = false;
+    const tiles = [...app.querySelectorAll('.choices .tile')];
+    tiles.forEach(t => t.onclick = () => {
+      if (locked) return;
+      const v = t.dataset.v;
+      if (v === String(o.correct)) {
+        locked = true; t.classList.remove('hint'); t.classList.add('good'); reward();
+        praise(`${pick(PRAISE_SAY)} ${o.okSay}`, () => done(!missed));
+      } else {
+        t.classList.add('bad'); miss(); missed = true;
+        tiles.find(x => x.dataset.v === String(o.correct))?.classList.add('hint');
+        say(o.wrongSay(v));
+      }
+    });
+  }
+  const nOpts = id => { const it = gi(id); return it.seen && it.b === 0 ? 2 : it.b >= 3 ? 4 : 3; };
+  const others = (pool, correct, n) => shuffle(pool.filter(x => x !== correct)).slice(0, n);
+  const gcase = l => G.stop > LOWER_STOP && Math.random() < .5 ? l.toLowerCase() : l;
+  function knownLetters(v) {
+    const pool = STOPS.slice(0, G.stop + 1).flatMap(s => s.items).filter(id => id[0] === 'L').map(id => id.slice(2));
+    if (!pool.includes(v)) pool.push(v);
+    for (const x of ABC) { if (pool.length >= 5) break; if (!pool.includes(x.l) && !RARE.includes(x.l)) pool.push(x.l); }
+    return pool;
+  }
+  function countBox(n, thing) {
+    return `<div class="count">${Array.from({ length: n }, () => `<button class="obj" style="transform:rotate(${rand(24) - 12}deg)" aria-label="Contar">${thing}</button>`).join('')}</div>`;
+  }
+  function wireCount() {
+    let c = 0;
+    app.querySelectorAll('.obj').forEach(o => o.onclick = () => {
+      if (o.classList.contains('done')) { say(NUMW[+o.dataset.n]); return; }
+      c++; o.dataset.n = c; o.classList.add('done'); o.style.transform = ''; say(NUMW[c]);
+    });
+  }
+  function letterRound(v, id, done, lower) {
+    const x = BY[v], pool = lower ? ABC.filter(a => !RARE.includes(a.l)).map(a => a.l) : knownLetters(v);
+    const opts = shuffle([v, ...others(pool, v, nOpts(id) - 1)]);
+    choiceRound({
+      ask: `¿Dónde está la <span class="hl">${esc(x.name)}</span>?`, say: `¿Dónde está la ${x.name}?`,
+      opts: opts.map(l => ({ v: l, html: lower ? l.toLowerCase() : gcase(l) })), correct: v,
+      okSay: `Es la ${x.name}, de ${x.word}.`, wrongSay: w => `Esa es la ${BY[w].name}. Busca la ${x.name}.`,
+    }, done);
+  }
+  const ROUND = {
+    L: (v, id, done) => letterRound(v, id, done, false),
+    l: (v, id, done) => letterRound(v, id, done, true),
+    S(v, id, done) {
+      const cons = G.stop >= 6 ? ['M','P','L','S','T','N','D'] : ['M','P','L','S'];
+      if (!cons.includes(v[0])) cons.push(v[0]);
+      const set = new Set([v, v[0] + pick(VOW.filter(x => x !== v[1])), pick(cons.filter(x => x !== v[0])) + v[1]]);
+      const n = Math.max(3, nOpts(id));
+      while (set.size < n) set.add(pick(cons) + pick(VOW));
+      const low = s => s.toLowerCase(), lc = G.stop > LOWER_STOP, d = s => lc ? low(s) : s;
+      choiceRound({
+        ask: `¿Dónde está <span class="hl">${d(v)}</span>?`, say: `¿Dónde está ${low(v)}?`,
+        opts: shuffle([...set]).map(s => ({ v: s, html: d(s) })), correct: v, cls: 'syl',
+        okSay: `${letterName(v[0])} con ${low(v[1])}: ${low(v)}.`,
+        wrongSay: w => `${letterName(w[0])} con ${low(w[1])} hace ${low(w)}. Busca ${low(v)}.`,
+      }, done);
+    },
+    N(v, id, done) {
+      const n = +v, max = Math.max(n <= 5 ? 5 : n <= 10 ? 10 : 20, G.stop >= 12 ? 20 : G.stop >= 5 ? 10 : 5);
+      const opts = shuffle([n, ...others(range(0, max), n, nOpts(id) - 1)]);
+      choiceRound({
+        ask: `¿Dónde está el <span class="hl">${NUMW[n]}</span>?`, say: `¿Dónde está el ${NUMW[n]}?`,
+        opts: opts.map(x => ({ v: x, html: x })), correct: n,
+        okSay: `Es el ${NUMW[n]}.`, wrongSay: w => `Ese es el ${NUMW[+w]}. Busca el ${NUMW[n]}.`,
+      }, done);
+    },
+    Q(v, id, done) {
+      const n = +v, set = new Set([n]);
+      [n - 1, n + 1, n + 2, n - 2].filter(x => x >= 1 && x <= 10).forEach(x => { if (set.size < Math.max(3, nOpts(id))) set.add(x); });
+      choiceRound({
+        ask: '¿Cuántos hay?', say: '¿Cuántos hay? Tócalos para contar.', top: countBox(n, pick(THINGS)),
+        opts: shuffle([...set]).map(x => ({ v: x, html: x })), correct: n, bubble: 'Toca cada uno para contar', setup: wireCount,
+        okSay: `Hay ${NUMW[n]}.`, wrongSay: w => `Ese es el ${NUMW[+w]}. Vamos a contar despacio.`,
+      }, done);
+    },
+    A(v, id, done) {
+      const n = +v, r = n + 1, thing = pick(THINGS), set = new Set([r]);
+      [r - 1, r + 1, r - 2, r + 2].filter(x => x >= 1 && x <= 11).forEach(x => { if (set.size < 3) set.add(x); });
+      choiceRound({
+        ask: `${n} + 1`, say: `${NUMW[n]} y uno más. ¿Cuántos son?`,
+        top: `<div class="sumline">${countBox(n, thing)}<span class="plus">+</span>${countBox(1, thing)}</div>`,
+        opts: shuffle([...set]).map(x => ({ v: x, html: x })), correct: r, bubble: 'Cuenta todos', setup: wireCount,
+        okSay: `${NUMW[n]} más uno son ${NUMW[r]}.`, wrongSay: w => `Ese es el ${NUMW[+w]}. Cuenta todos despacio.`,
+      }, done);
+    },
+    W(v, id, done) {
+      const opts = shuffle([v, ...others(Object.keys(GREAD), v, 2)]);
+      choiceRound({
+        ask: '¿Qué pone aquí?', say: '¿Qué pone aquí? Léelo tú.', top: `<div class="readcard">${esc(v)}</div>`, cls: 'pic',
+        opts: opts.map(w => ({ v: w, html: GREAD[w] })), correct: v, bubble: 'Lee despacio',
+        okSay: `Pone ${v}.`, wrongSay: w => `Eso es ${w}. Lee otra vez, letra a letra.`,
+      }, done);
+    },
+    F(v, id, done) {
+      const [num, noun] = v.split(' ');
+      const all = Object.keys(GPHR).filter(p => p !== v);
+      const near = shuffle(all).sort((a, b) => sim(b) - sim(a));
+      function sim(p) { const [x, y] = p.split(' '); return (x === num ? 1 : 0) + (y.slice(0, 3) === noun.slice(0, 3) ? 1 : 0); }
+      const opts = shuffle([v, ...near.slice(0, 2)]);
+      choiceRound({
+        ask: '¿Qué pone aquí?', say: '¿Qué pone aquí? Léelo tú.', top: `<div class="readcard" style="font-size:clamp(40px,9vw,68px)">${esc(v)}</div>`, cls: 'pic wide',
+        opts: opts.map(w => ({ v: w, html: GPHR[w] })), correct: v, bubble: 'Lee las dos palabras',
+        okSay: `Pone ${v}.`, wrongSay: w => `Eso es ${w}. Lee otra vez despacio.`,
+      }, done);
+    },
+    B(v, id, done) {
+      const letters = [...v.toUpperCase()], lc = G.stop > LOWER_STOP, d = l => lc ? l.toLowerCase() : l;
+      let pos = 0, missed = false;
+      const ask = () => say(`Vamos a escribir ${v}. ${letters.map(letterName).join(', ')}.`);
+      gscreen(`<div class="stage">
+        <p class="ask">Forma la palabra</p>
+        <div class="picture tap" id="pic" role="button" aria-label="Escuchar la palabra">${GBUILD[v]}</div>
+        <div class="slots">${letters.map((l, i) => `<div class="slot${i === 0 ? ' next' : ''}">${d(l)}</div>`).join('')}</div>
+        <div class="choices small">${shuffle(letters).map((l, k) => `<button class="tile c${k % 5}" data-l="${l}">${d(l)}</button>`).join('')}</div>
+      </div>`, ask);
+      say(`Vamos a escribir ${v}.`);
+      document.getElementById('pic').onclick = () => say(v);
+      const slots = app.querySelectorAll('.slot');
+      app.querySelectorAll('.choices .tile').forEach(t => t.onclick = () => {
+        if (pos >= letters.length || t.classList.contains('used')) return;
+        const l = t.dataset.l;
+        if (l === letters[pos]) {
+          t.classList.add('used'); slots[pos].classList.remove('next'); slots[pos].classList.add('full'); pos++;
+          if (pos < letters.length) { slots[pos].classList.add('next'); say(letterName(l)); }
+          else { reward(); praise(`${letters.map(letterName).join(', ')}. ¡${v}! ${pick(PRAISE_SAY)}`, () => done(!missed), 500); }
+        } else {
+          t.classList.remove('bad'); void t.offsetWidth; t.classList.add('bad'); setTimeout(() => t.classList.remove('bad'), 600);
+          miss(); missed = true;
+          say(`Esa es la ${letterName(l)}. Busca la ${letterName(letters[pos])}.`);
+        }
+      });
+    },
+  };
+
+  function map() {
+    screen(`<div class="stage"><p class="ask">Mi camino</p><div class="path">${STOPS.map((s, i) => {
+      const st = i < G.stop ? 'done' : i === G.stop ? 'now' : 'lock';
+      return `<button class="stopn k-${s.k} ${st}" data-i="${i}">
+        <span class="badge${isEm(s.icon) || st === 'lock' ? ' em' : ''}">${st === 'lock' ? '🔒' : s.icon}${st === 'done' ? '<i>⭐</i>' : ''}</span>
+        <span class="lbl"><small>Parada ${i + 1}</small><b>${esc(s.name)}</b>${st === 'now' ? `<span class="meter"><i style="width:${Math.round(stopProgress(i) * 100)}%"></i></span><em>▶ Jugar</em>` : ''}</span>
+      </button>`;
+    }).join('')}</div></div>`, null, false);
+    app.querySelectorAll('.stopn').forEach(b => b.onclick = () => {
+      const i = +b.dataset.i;
+      if (i > G.stop) { b.animate?.([{ transform: 'translateX(-8px)' }, { transform: 'translateX(8px)' }, { transform: 'none' }], { duration: 300 }); say('Esa parada se abre más adelante.'); }
+      else startSession(i);
+    });
+    app.querySelector('.stopn.now')?.scrollIntoView({ block: 'center' });
+  }
+
+  // ---------- Zona de mayores ----------
+  function grown() {
+    roundId++;
+    window.speechSynthesis?.cancel();
+    const sts = ABC.map(x => ({ l: x.l, s: status(x.l), a: stats.letters[x.l] || [], t: stats.traced[x.l] || 0 }));
+    const nts = NUMW.map((_, n) => ({ l: n, s: statusN(n), a: stats.numbers[String(n)] || [], t: stats.traced['#' + n] || 0 }));
+    const ok = sts.filter(x => x.s === 'ok').map(x => x.l), hard = sts.filter(x => x.s === 'hard').map(x => x.l);
+    const okN = nts.filter(x => x.s === 'ok').map(x => x.l), hardN = nts.filter(x => x.s === 'hard').map(x => x.l);
+    const seen = sts.concat(nts).some(x => x.s !== 'new');
+    const sumL = `Letras: reconoce bien ${ok.length} de 27${ok.length ? ` (${ok.join(', ')})` : ''}. ` + (hard.length ? `Le cuestan: ${hard.join(', ')}.` : '');
+    const sumN = `Números: reconoce bien ${okN.length} de 21${okN.length ? ` (${okN.join(', ')})` : ''}. ` + (hardN.length ? `Le cuestan: ${hardN.join(', ')}.` : '');
+    const tiles = list => list.map(x => {
+      const last = x.a.slice(-5), c = last.reduce((s, y) => s + y, 0);
+      return `<div class="st-${x.s}"><b>${x.l}</b><small>${last.length ? `${c}/${last.length}` : '—'}</small>${x.t ? `<small>✏️ ${x.t}</small>` : ''}</div>`;
+    }).join('');
+    const gAll = [...new Set(STOPS.flatMap(s => s.items))];
+    const gHard = gAll.filter(id => gi(id).lapses >= 2 && gi(id).b < 3).slice(0, 12);
+    const GL = [['find', 'Busca la letra'], ['start', '¿Cómo empieza?'], ['syl', 'Sílabas'], ['build', 'Forma palabras'], ['trace', 'Repasados'], ['nfind', 'Busca el número'], ['count', '¿Cuántos hay?']];
+    roundId++;
+    app.innerHTML = `
+      <div class="bar">
+        <button class="round" id="home" aria-label="Volver al menú">🏠</button>
+        <div class="stars"><span class="s">⭐</span><b>${stars}</b></div>
+        <span class="round" style="visibility:hidden"></span>
+      </div>
+      <div class="grown">
+        <section class="panel">
+          <h2>Cuenta</h2>
+          <p id="syncmsg"></p>
+          <div class="form">
+            <label for="pname">Nombre</label>
+            <input type="text" id="pname" maxlength="20" autocomplete="off" value="${esc(NAME)}">
+          </div>
+          <div class="row" style="justify-content:flex-start">
+            <button class="pill alt" id="psave">Guardar nombre</button>
+            ${CLOUD_ON ? '<button class="pill alt" id="psync">Sincronizar ahora</button><button class="pill warn" id="pout">Cerrar sesión aquí</button>' : ''}
+          </div>
+        </section>
+        <section class="panel">
+          <h2>El camino de Lila</h2>
+          <p>Va por la <b>parada ${G.stop + 1} de ${STOPS.length}: ${esc(STOPS[G.stop].name)}</b>. Ha hecho ${G.sessions} ${G.sessions === 1 ? 'sesión' : 'sesiones'} en ${G.days.length} ${G.days.length === 1 ? 'día' : 'días'}; lleva ${dayStreak()} seguidos.</p>
+          <div class="counts">
+            <div><b>${gAll.filter(id => gi(id).b >= 3).length}</b><span>Memorizado</span></div>
+            <div><b>${gAll.filter(id => gi(id).seen && gi(id).b < 3).length}</b><span>Aprendiendo</span></div>
+            <div><b>${gAll.filter(id => !gi(id).seen).length}</b><span>Por ver</span></div>
+          </div>
+          <p>${gHard.length ? 'Se le resiste: <b>' + gHard.map(id => esc(label(id))).join(', ') + '</b>.' : 'Ahora mismo no hay nada que se le resista especialmente.'}</p>
+          <p style="font-size:14px;color:var(--ink-soft)">Algo cuenta como memorizado cuando lo acierta a la primera en 3 días distintos. Lo aprendido vuelve a salir al cabo de 1, 2, 4, 7 y 14 días; si falla, baja un escalón y sale antes. Una parada se supera con el 80 % acertado a la primera.</p>
+          <div class="row" style="justify-content:flex-start">
+            <button class="pill alt" id="gprev">◀ Parada anterior</button>
+            <button class="pill alt" id="gnext">Parada siguiente ▶</button>
+            <button class="pill alt" id="gunlock">${G.unlockAll ? 'Juegos: todos abiertos' : 'Juegos: se abren con el camino'}</button>
+          </div>
+        </section>
+        <section class="panel">
+          <h2>Progreso de ${esc(NAME)}</h2>
+          <p>${seen ? esc(sumL) + '<br>' + esc(sumN) + '<br>El juego enseña más a menudo lo que le cuesta.' : `${esc(NAME)} todavía no ha jugado. Cuando juegue, aquí verás qué letras y números reconoce y cuáles le cuestan.`}</p>
+          <div class="legend">
+            <span><i class="dot st-ok"></i>Lo reconoce</span><span><i class="dot st-learn"></i>Aprendiendo</span>
+            <span><i class="dot st-hard"></i>Le cuesta</span><span><i class="dot st-new"></i>Sin practicar</span>
+          </div>
+          <h3>Letras</h3>
+          <div class="map">${tiles(sts)}</div>
+          <h3>Números</h3>
+          <div class="map">${tiles(nts)}</div>
+          <p style="font-size:14px;color:var(--ink-soft)">Cada casilla cuenta los aciertos de los últimos 5 intentos. ✏️ indica cuántas veces lo ha repasado con el dedo. Del 11 al 20 aparecen cuando lleva 40 estrellas.</p>
+          <div class="counts">${GL.map(([k, n]) => { const v = stats.games[k] || [0, 0]; return `<div><b>${v[0]}</b><span>${n}${k === 'trace' ? '' : ` · ${v[1]} fallos`}</span></div>`; }).join('')}
+            <div><b>${Math.min(Math.floor(stars / 10), STICKERS.length)}</b><span>Pegatinas</span></div></div>
+          <div class="row" style="justify-content:flex-start"><button class="pill warn" id="reset">Borrar progreso</button></div>
+        </section>
+        <section class="panel words">
+          <h2>Mis palabras</h2>
+          <p>Añade palabras que conozca: su nombre, la familia, la mascota o sus juguetes. Saldrán en «Forma palabras» y en «¿Cómo empieza?». Mejor si son cortas, de hasta 8 letras y sin espacios.</p>
+          <ul id="wl"></ul>
+          <div class="form">
+            <label for="nw">Palabra nueva</label>
+            <input type="text" id="nw" maxlength="12" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Por ejemplo: mamá">
+            <label>Dibujo</label>
+            <div class="emojis" id="em">${EMOJIS.map((e, i) => `<button type="button" data-e="${e}" aria-pressed="${i === 0}">${e}</button>`).join('')}</div>
+            <div class="photo">
+              <label class="pill alt" for="ph" style="font-size:18px">📷 O usa una foto</label>
+              <input type="file" id="ph" accept="image/*">
+              <span id="phprev"></span>
+            </div>
+            <div class="row" style="justify-content:flex-start"><button class="pill" id="add">Añadir palabra</button></div>
+            <div class="msg" id="msg" aria-live="polite"></div>
+          </div>
+        </section>
+      </div>`;
+    document.getElementById('home').onclick = home;
+    const syncmsg = document.getElementById('syncmsg');
+    const SYNC_TXT = { off: 'Este juego aún no está conectado a internet: el progreso se guarda solo en este dispositivo.', idle: 'Conectado. El progreso se guarda en internet.', ok: 'Todo guardado en internet.', pending: 'Guardando…', offline: 'Sin conexión. Se guardará en internet cuando vuelva la red.', denied: 'La contraseña ha cambiado. Cierra sesión y vuelve a entrar.' };
+    const paintSync = () => { if (syncmsg.isConnected) syncmsg.textContent = SYNC_TXT[Cloud.status] || ''; };
+    Cloud.onchange = paintSync; paintSync();
+    document.getElementById('psave').onclick = () => { const v = document.getElementById('pname').value.trim(); if (v) { store.set('name', v.slice(0, 20)); location.reload(); } };
+    const psync = document.getElementById('psync');
+    if (psync) psync.onclick = async () => { await Cloud.push(); const r = await Cloud.pull(LS.get('pass', '')); if (r === 'ok') location.reload(); };
+    const pout = document.getElementById('pout');
+    if (pout) pout.onclick = async () => {
+      if (!pout.dataset.sure) { pout.dataset.sure = '1'; pout.textContent = '¿Seguro? Toca otra vez'; return; }
+      await Cloud.push(); Cloud.logout(); location.reload();
+    };
+
+    document.getElementById('gprev').onclick = () => { G.stop = Math.max(0, G.stop - 1); saveG(); grown(); };
+    document.getElementById('gnext').onclick = () => { G.stop = Math.min(STOPS.length - 1, G.stop + 1); saveG(); grown(); };
+    document.getElementById('gunlock').onclick = () => { G.unlockAll = !G.unlockAll; saveG(); grown(); };
+
+    const reset = document.getElementById('reset');
+    reset.onclick = () => {
+      if (reset.dataset.sure) {
+        stats = { letters: {}, numbers: {}, traced: {}, games: {} }; saveStats();
+        G = { stop: 0, items: {}, days: [], sessions: 0, unlockAll: G.unlockAll }; saveG();
+        stars = 0; store.set('stars', 0); grown();
+      } else {
+        reset.dataset.sure = '1'; reset.textContent = '¿Seguro? Toca otra vez para borrar';
+        setTimeout(() => { if (reset.isConnected) { delete reset.dataset.sure; reset.textContent = 'Borrar progreso'; } }, 4000);
+      }
+    };
+
+    const wl = document.getElementById('wl'), msg = document.getElementById('msg');
+    const renderWords = () => {
+      wl.innerHTML = myWords.length ? myWords.map((w, i) => `<li><span class="pic">${pic(w.e)}</span><span class="nm">${esc(w.word)}</span><button class="del" data-i="${i}" aria-label="Quitar ${esc(w.word)}">✕</button></li>`).join('')
+        : '<li><span class="nm" style="font-size:16px;font-weight:400;color:var(--ink-soft)">Aún no hay palabras.</span></li>';
+      wl.querySelectorAll('.del').forEach(b => b.onclick = () => { myWords.splice(+b.dataset.i, 1); store.set('words', myWords); renderWords(); });
+    };
+    renderWords();
+
+    let chosen = EMOJIS[0], photo = null;
+    const em = document.getElementById('em');
+    em.querySelectorAll('button').forEach(b => b.onclick = () => {
+      chosen = b.dataset.e; photo = null; document.getElementById('phprev').innerHTML = '';
+      em.querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed', x === b));
+    });
+    document.getElementById('ph').onchange = e => {
+      const f = e.target.files[0]; if (!f) return;
+      const img = new Image(), url = URL.createObjectURL(f);
+      img.onload = () => {
+        const s = 240, c = document.createElement('canvas'); c.width = s; c.height = s;
+        const m = Math.min(img.width, img.height);
+        c.getContext('2d').drawImage(img, (img.width - m) / 2, (img.height - m) / 2, m, m, 0, 0, s, s);
+        photo = c.toDataURL('image/jpeg', .75); URL.revokeObjectURL(url);
+        document.getElementById('phprev').innerHTML = `<img src="${photo}" alt="Foto elegida">`;
+        em.querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed', 'false'));
+      };
+      img.onerror = () => { msg.className = 'msg err'; msg.textContent = 'No se ha podido abrir esa imagen. Prueba con otra foto.'; };
+      img.src = url;
+    };
+    document.getElementById('add').onclick = () => {
+      const input = document.getElementById('nw');
+      const word = input.value.trim();
+      if (!word) { msg.className = 'msg err'; msg.textContent = 'Escribe una palabra primero.'; return; }
+      if (!/^[a-záéíóúüñ]+$/i.test(word)) { msg.className = 'msg err'; msg.textContent = 'Usa solo letras, sin espacios ni números.'; return; }
+      if (!BY[firstLetter(word)]) { msg.className = 'msg err'; msg.textContent = 'Esa palabra empieza por una letra que el juego no conoce.'; return; }
+      myWords.push({ word, e: photo || chosen });
+      if (!store.set('words', myWords)) {
+        myWords.pop(); msg.className = 'msg err';
+        msg.textContent = 'No se ha podido guardar. Si usas muchas fotos, quita alguna palabra o usa un dibujo.'; return;
+      }
+      input.value = ''; photo = null; document.getElementById('phprev').innerHTML = '';
+      msg.className = 'msg'; msg.textContent = `Añadida: ${word}`;
+      renderWords();
+    };
+  }
+
+    home();
+  }
+
+  boot();
+})();
+</script>
+<script>
+if ('serviceWorker' in navigator && location.protocol === 'https:') navigator.serviceWorker.register('sw.js').catch(() => {});
+</script>
+</body>
+</html>
