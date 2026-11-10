@@ -1,5 +1,5 @@
 // Permite jugar sin conexión: guarda la página y las fuentes en el dispositivo.
-const CACHE = 'lila-v4';
+const CACHE = 'lila-v5';
 const CORE = ['./', './index.html', './config.js', './manifest.webmanifest', './icon-192.png', './icon-512.png'];
 
 self.addEventListener('install', e => {
